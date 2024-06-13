@@ -214,7 +214,7 @@ const TeamAnalysis = () =>{
             console.log(value); // logs the selected value
           }
 
-    async function handleClick(){
+    /*async function handleClick(){
             // Handle button click here
   
 
@@ -229,8 +229,8 @@ const TeamAnalysis = () =>{
             //const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
             const backendUrl = process.env.REACT_APP_BACKEND_URL;
             const apiUrl = `${backendUrl}` + '/feature1';
-            console.log(`${backendUrl}/feature1`);
-            console.log(backendUrl);
+            //console.log(`${backendUrl}/feature1`);
+            //console.log(backendUrl);
             console.log("apiurl:",apiUrl);
             
             axios.post(apiUrl, data)
@@ -248,22 +248,42 @@ const TeamAnalysis = () =>{
               setgraph4x(response.data.graph4.data);
               setgraph4y(response.data.graph4.labels);
 
+      
+
 
             })
             .catch(error => {
               console.log(error);
             });
 
-
-
-
-
-
-
-
-
             console.log("Button clicked!");
-          }
+          }*/
+
+
+          const handleClick = async () => {
+            console.log("Selected team is:", team);
+    
+            const data = { 'team': team };
+            const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+            console.log(backendUrl);
+    
+            try {
+                const response = await axios.post(`${backendUrl}/feature1`, data);
+                console.log(response.data);
+                setgraph1x(response.data.graph1.data);
+                setgraph1y(response.data.graph1.labels);
+                setgraph2x(response.data.graph2.data);
+                setgraph2y(response.data.graph2.labels);
+                setgraph3x(response.data.graph3.data);
+                setgraph3y(response.data.graph3.labels);
+                setgraph4x(response.data.graph4.data);
+                setgraph4y(response.data.graph4.labels);
+            } catch (error) {
+                console.error("Error fetching data from backend:", error);
+            }
+    
+            console.log("Button clicked!");
+        };
     
 
     return(
