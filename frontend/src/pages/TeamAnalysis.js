@@ -224,9 +224,10 @@ const TeamAnalysis = () =>{
             
             const data={
               'team': team};
+            const backendUrl = process.env.BACKEND_URL || 'http://localhost:5000';
 
             
-            axios.post('http://127.0.0.1:5000/feature1', data)
+            axios.post('${backendUrl}/feature1', data)
             .then(response => {
               console.log(response.data)
               setgraph1x(response.data.grpah1.data);
