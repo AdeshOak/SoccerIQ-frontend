@@ -20,7 +20,7 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 //Importing background image
 import backgroundImage from './feature1bg.jpeg';
 
-import urljoin from 'url-join';
+
 
 
 
@@ -228,7 +228,7 @@ const TeamAnalysis = () =>{
               'team': team};
             //const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
             const backendUrl = process.env.REACT_APP_BACKEND_URL;
-            const apiUrl = urljoin(backendUrl, 'feature1');
+            const apiUrl = `${backendUrl}` + 'feature1';
             console.log(`${backendUrl}/feature1`);
             console.log(backendUrl);
             console.log("apiurl:",apiUrl);
