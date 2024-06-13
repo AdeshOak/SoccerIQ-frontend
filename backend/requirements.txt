@@ -10,3 +10,4 @@ flask_api
 hyperopt
 mlxtend
 flask_cors
+gunicorn
