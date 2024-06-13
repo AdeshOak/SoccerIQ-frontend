@@ -225,7 +225,7 @@ const TeamAnalysis = () =>{
             const data={
               'team': team};
             const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-            console.log(backendUrl);
+            console.log('${backendUrl}/feature1');
             
             axios.post('${backendUrl}/feature1', data)
             .then(response => {
