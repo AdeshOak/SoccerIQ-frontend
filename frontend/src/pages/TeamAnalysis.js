@@ -228,12 +228,12 @@ const TeamAnalysis = () =>{
               'team': team};
             //const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
             const backendUrl = process.env.REACT_APP_BACKEND_URL;
-            const apiUrl = `${backendUrl}` + 'feature1';
+            const apiUrl = `${backendUrl}` + '/feature1';
             console.log(`${backendUrl}/feature1`);
             console.log(backendUrl);
             console.log("apiurl:",apiUrl);
             
-            axios.post(`${backendUrl}/feature1`, data)
+            axios.post(apiUrl, data)
             .then(response => {
               console.log(response.data)
               setgraph1x(response.data.grpah1.data);
