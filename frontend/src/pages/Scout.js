@@ -38,7 +38,7 @@ const Scout = () => {
     setIsLoading(true); // Start loading
     console.log("Clicked sv",value)
 
-    await axios.post('http://127.0.0.1:5000/feature4', null,
+    /*await axios.post('http://127.0.0.1:5000/feature4', null,
     {params:{'intial_overall':value}})
 
     
@@ -50,7 +50,24 @@ const Scout = () => {
     })
     .catch(error => {
       console.log(error);
-    });
+    });*/
+
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+    console.log(backendUrl);
+
+    try {
+      const response = await axios.post(`${backendUrl}/feature4`, null, {
+        params: {
+          'intial_overall': value
+        }
+      });
+    
+      console.log(response.data);
+      setPlayers(response.data.result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      // Handle error state or display an error message to the user
+    }
 
 
 
