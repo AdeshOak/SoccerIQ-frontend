@@ -122,7 +122,7 @@ const DreamTeam = () =>{
 
 
 
-        await axios.post('http://127.0.0.1:5000/feature3', null,
+       /* await axios.post('http://127.0.0.1:5000/feature3', null,
         {params:p})
       .then(response => {
                   console.log(response.data)
@@ -136,9 +136,17 @@ const DreamTeam = () =>{
         })
         .catch(error => {
           console.log(error);
-        });
-
-
+        });*/
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+        console.log(backendUrl);
+        try {
+          const response = await axios.post(`${backendUrl}/feature3`, null, { params: p });
+          console.log(response.data);
+          setPlayers(response.data.result);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+          // Handle error state or display an error message to the user
+        }
       }
       //For getting position array in parent element
     const [parentSelectValues, setParentSelectValues] = useState([]);
