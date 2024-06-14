@@ -71,14 +71,20 @@ const SuitedPlayer = () =>{
       const ref = useRef(null);
       
       const handleButtonClick = async() => {
+
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+        console.log(backendUrl);
         
         
-        axios.post('http://127.0.0.1:5000/feature2', null,{params:{team_name:team_value,sub_feature:metric}})
+        /*axios.post('http://127.0.0.1:5000/feature2', null,{params:{team_name:team_value,sub_feature:metric}})
 
         .then(response => {
           console.log(response.data)
           
           setItems(response.data.result)
+
+
+          
           
           if(metric == 'Most Expected Goals')
           {
@@ -122,9 +128,60 @@ const SuitedPlayer = () =>{
         })
         .catch(error => {
           console.log(error);
-        });
+        });*/
 
-      
+        try {
+          axios.post(`${backendUrl}/feature2`, null, {
+            params: {
+              team_name: team_value,
+              sub_feature: metric
+            }
+          })
+          .then(response => {
+            console.log(response.data);
+            
+            // Handle different metrics
+            if (metric === 'Most Expected Goals') {
+              const names = response.data.result.map(item => item.player);
+              setDataList(names);
+          
+              const exp = response.data.result.map(item => parseInt(item.expectedGoals));
+              setexpected(exp);
+          
+              const act = response.data.result.map(item => item.trueGoals);
+              setActual(act);
+            } else if (metric === 'Best Finisher') {
+              const name = response.data.result.map(item => item.player);
+              setDataList(name);
+          
+              const gd = response.data.result.map(item => Math.abs(item.difference));
+              setgoaldiff(gd);
+            } else {
+              const name = response.data.result.map(item => item.player);
+              setDataList(name);
+          
+              const ob = response.data.result.map(item => item.n_outbox_shots);
+              setobshots(ob);
+            }
+          
+            // Modify the response data for display purposes
+            const modifiedData = response.data.result.map(item => ({
+              ...item,
+              difference: Math.abs(item.difference.toFixed(2)),
+              expectedGoals: item.expectedGoals.toFixed(2)
+            }));
+          
+            // Update the state with the modified response data
+            setItems(modifiedData);
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+            // Handle error state or display an error message to the user
+          });
+        } catch (error) {
+          console.error('Error occurred while making the request:', error);
+          // Handle error state or display an error message to the user
+        }
 
 
 
