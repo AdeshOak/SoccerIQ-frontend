@@ -119,24 +119,6 @@ const DreamTeam = () =>{
             country:team
           }
         }
-
-
-
-       /* await axios.post('http://127.0.0.1:5000/feature3', null,
-        {params:p})
-      .then(response => {
-                  console.log(response.data)
-                  setPlayers(response.data.result)
-
-
-
-        
-  
-         
-        })
-        .catch(error => {
-          console.log(error);
-        });*/
         const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
         console.log(backendUrl);
         try {
