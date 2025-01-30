@@ -8,6 +8,7 @@ import SuitedPlayer from './pages/SuitedPlayer'
 import Scout from './pages/Scout'
 import Details from './pages/Details';
 import DreamTeam from './pages/DreamTeam'
+import AboutPlatform from './pages/AboutPlatform';
 
 
 
@@ -19,7 +20,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<Home/>} />
-        <Route path="/about-platform" component={AboutPlatform} />
+        <Route path="/about-platform" element={AboutPlatform} />
         <Route path='/feature1' element={<TeamAnalysis/>} />
         <Route path='/feature2' element={<SuitedPlayer/>} />
         <Route path='/details' element={<Details/>} />
