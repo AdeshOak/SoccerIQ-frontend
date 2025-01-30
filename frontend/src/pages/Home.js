@@ -1,11 +1,11 @@
 import React from 'react';
 import backgroundImage from './homebg.jpeg'; // Background image (soccer field, players, etc.)
-import { FaChartBar, FaUsers, FaFootballBall } from 'react-icons/fa'; // Icons for features
+import { FaChartBar, FaUsers, FaFootballBall } from 'react-icons/fa'; // Soccer Ball Icon
 
 const Home = () => {
   return (
     <div>
-      {/* Hero Section with background image and overlay */}
+      {/* Combined Hero Section with background image and overlay */}
       <div style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}>
         <img
           src={backgroundImage}
@@ -24,10 +24,11 @@ const Home = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay
+            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay for readability
           }}
         ></div>
 
+        {/* Hero Content */}
         <div
           style={{
             position: 'absolute',
@@ -46,39 +47,54 @@ const Home = () => {
             The Power of Soccer Data Analytics
           </p>
           <button
+            onClick={() => window.location.href = "/features"}  // Direct the user to the features page
             style={{
               backgroundColor: '#28a745', // Soccer field green
               color: 'white',
-              padding: '10px 20px',
+              padding: '12px 30px',
               border: 'none',
-              borderRadius: '5px',
+              borderRadius: '8px',
               fontSize: '18px',
               cursor: 'pointer',
               fontWeight: 'bold',
+              transition: 'background-color 0.3s ease',
             }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#218838'} // Hover effect
+            onMouseOut={(e) => e.target.style.backgroundColor = '#28a745'}
           >
             Explore Features
           </button>
         </div>
-      </div>
 
-      {/* Data Visualizations Section */}
-      <div style={{ padding: '50px 0', backgroundColor: '#f8f9fa' }}>
-        <h2 style={{ textAlign: 'center', fontSize: '36px', color: '#333' }}>
-          Real-Time Data Analytics for Soccer
-        </h2>
-        <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '40px' }}>
-          <div style={{ textAlign: 'center', width: '200px' }}>
+        {/* Features Section below the Hero Section */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '10%',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '40px',
+            zIndex: 2,
+          }}
+        >
+          {/* Team Analysis */}
+          <div style={{ textAlign: 'center', color: 'white', maxWidth: '250px' }}>
             <FaChartBar size={50} color="#28a745" />
             <h3>Team Analysis</h3>
             <p>Analyze team performance across various metrics.</p>
           </div>
-          <div style={{ textAlign: 'center', width: '200px' }}>
+
+          {/* Player Stats */}
+          <div style={{ textAlign: 'center', color: 'white', maxWidth: '250px' }}>
             <FaUsers size={50} color="#28a745" />
             <h3>Player Stats</h3>
             <p>Get in-depth player statistics and performance insights.</p>
           </div>
-          <div style={{ textAlign: 'center', width: '200px' }}>
+
+          {/* Prediction Models */}
+          <div style={{ textAlign: 'center', color: 'white', maxWidth: '250px' }}>
             <FaFootballBall size={50} color="#28a745" />
             <h3>Prediction Models</h3>
             <p>Predict match outcomes using AI-driven models.</p>
@@ -90,3 +106,4 @@ const Home = () => {
 };
 
 export default Home;
+
