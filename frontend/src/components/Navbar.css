@@ -1,0 +1,29 @@
+.nav-logo {
+    height: 70px;
+    width: 70px;
+    margin-right: 20px; /* Adds spacing between logo and links */
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #000; /* Dark background */
+  }
+  
+  .nav-menu {
+    display: flex;
+    gap: 20px; /* Space between menu items */
+  }
+  
+  .nav-menu a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .nav-menu a:hover {
+    color: #FFD700; /* Highlight effect */
+  }
+  
