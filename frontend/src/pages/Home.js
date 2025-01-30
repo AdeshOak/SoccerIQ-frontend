@@ -120,14 +120,14 @@ const FeatureCard = ({ icon, title, description }) => {
         textAlign: 'center',
         color: 'white',
         width: '250px', // Fixed width
-        height: '200px', // Fixed height
+        height: '220px', // Fixed height for consistency
         padding: '20px',
-        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark card for readability
+        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark overlay
         borderRadius: '12px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between', // Keeps text evenly distributed
         alignItems: 'center',
+        justifyContent: 'space-evenly', // Equal spacing for all elements
         transition: 'transform 0.3s ease, background-color 0.3s ease',
       }}
       onMouseOver={(e) => {
@@ -139,12 +139,13 @@ const FeatureCard = ({ icon, title, description }) => {
         e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
       }}
     >
-      {icon}
-      <h3 style={{ marginTop: '10px', fontSize: '18px', fontWeight: 'bold' }}>{title}</h3>
-      <p style={{ fontSize: '14px', margin: '0px 10px', textAlign: 'center' }}>{description}</p>
+      <div style={{ fontSize: '40px' }}>{icon}</div> {/* Logo/Icon */}
+      <h3 style={{ fontSize: '18px', fontWeight: 'bold', margin: '10px 0' }}>{title}</h3>
+      <p style={{ fontSize: '14px', margin: '0 10px' }}>{description}</p>
     </div>
   );
 };
+
 
 
 export default Home;
