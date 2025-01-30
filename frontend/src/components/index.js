@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from '../SoccerIQ.png'; 
 import { Nav, NavLink, Bars, NavMenu } from './NavbarElements';
-import './Navbar.css'; // Import CSS
+import './Navbar.css';
 
 const Navbar = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   return (
     <>
       <Nav>
@@ -13,10 +15,24 @@ const Navbar = () => {
         <Bars />
         <NavMenu>
           <NavLink to='/' activeStyle>Home</NavLink>
-          <NavLink to='/feature1' activeStyle>Team Analysis</NavLink>
-          <NavLink to='/feature2' activeStyle>Suited Player</NavLink>
-          <NavLink to='/feature3' activeStyle>Dream Team</NavLink>
-          <NavLink to='/feature4' activeStyle>Scout</NavLink>
+          
+          {/* Dropdown Menu */}
+          <div 
+            className="nav-dropdown" 
+            onMouseEnter={() => setDropdownOpen(true)} 
+            onMouseLeave={() => setDropdownOpen(false)}
+          >
+            <button className="dropdown-btn">Explore Features ▾</button>
+            {dropdownOpen && (
+              <div className="dropdown-menu">
+                <NavLink to='/feature1'>Team Analysis</NavLink>
+                <NavLink to='/feature2'>Suited Player</NavLink>
+                <NavLink to='/feature3'>Dream Team</NavLink>
+                <NavLink to='/feature4'>Scout</NavLink>
+              </div>
+            )}
+          </div>
+
         </NavMenu>
       </Nav>
     </>

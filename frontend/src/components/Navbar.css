@@ -1,29 +1,45 @@
 .nav-logo {
     height: 70px;
     width: 70px;
-    margin-right: 20px; /* Adds spacing between logo and links */
+    margin-right: 20px;
   }
   
-  .navbar {
+  .nav-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #333;
+    min-width: 180px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background-color: #000; /* Dark background */
+    flex-direction: column;
+    z-index: 100;
   }
   
-  .nav-menu {
-    display: flex;
-    gap: 20px; /* Space between menu items */
-  }
-  
-  .nav-menu a {
+  .dropdown-menu a {
     color: white;
     text-decoration: none;
-    font-weight: bold;
+    padding: 10px;
+    display: block;
   }
   
-  .nav-menu a:hover {
-    color: #FFD700; /* Highlight effect */
+  .dropdown-menu a:hover {
+    background: #444;
   }
   
