@@ -299,7 +299,7 @@ const TeamAnalysis = () => {
     </Chip>
   </Divider>
   <Box sx={{ marginLeft: '45px', marginTop: '10px', display: 'flex', flexDirection: 'row', gap: 2, width: '1300px', padding: '2em' }}>
-    <LineChart chartLabel={"Red Cards"} labels={graph3y} data={graph3x} color={'red'} sx={{ margin: '50px', width: '50%' }} />
+    <LineChart chartLabel={"Red Cards"} labels={graphs.graph3y} data={graphs.graph3x} color={'red'} sx={{ margin: '50px', width: '50%' }} />
     <Divider orientation="vertical"></Divider>
     <div style={{ width: '600px', marginTop: '300px' }}>
       {content3}
@@ -315,7 +315,7 @@ const TeamAnalysis = () => {
     </Chip>
   </Divider>
   <Box sx={{ marginLeft: '45px', marginTop: '10px', display: 'flex', flexDirection: 'row', gap: 2, width: '1300px', padding: '2em' }}>
-    <LineChart chartLabel={"Yellow Cards"} labels={graph4y} data={graph4x} color={'yellow'} sx={{ margin: '50px', width: '50%' }} />
+    <LineChart chartLabel={"Yellow Cards"} labels={graphs.graph4y} data={graphs.graph4x} color={'yellow'} sx={{ margin: '50px', width: '50%' }} />
     <Divider orientation="vertical"></Divider>
     <div style={{ width: '600px', marginTop: '300px' }}>
       {content4}
