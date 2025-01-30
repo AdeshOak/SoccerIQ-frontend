@@ -1,5 +1,6 @@
 import React from 'react';
-import { ReactComponent as logo } from "./logo.svg";
+//import { ReactComponent as logo } from "./logo.svg";
+import logo from 'frontend/public/SoccerIQ.png'; 
 
 
 import {
@@ -17,7 +18,7 @@ const Navbar = () => {
     <>
       <Nav>
         <NavLink to='/'>
-          SoccerIQ
+        <img src={logo} alt="SoccerIQ Logo" style={{ height: '50px', width: '50px' }} />
         </NavLink>
         <Bars />
         <NavMenu>
