@@ -119,10 +119,15 @@ const FeatureCard = ({ icon, title, description }) => {
       style={{
         textAlign: 'center',
         color: 'white',
-        maxWidth: '250px',
+        width: '250px', // Fixed width
+        height: '200px', // Fixed height
         padding: '20px',
         backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark card for readability
         borderRadius: '12px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between', // Keeps text evenly distributed
+        alignItems: 'center',
         transition: 'transform 0.3s ease, background-color 0.3s ease',
       }}
       onMouseOver={(e) => {
@@ -135,11 +140,12 @@ const FeatureCard = ({ icon, title, description }) => {
       }}
     >
       {icon}
-      <h3 style={{ marginTop: '10px' }}>{title}</h3>
-      <p style={{ fontSize: '14px', margin: '10px 0' }}>{description}</p>
+      <h3 style={{ marginTop: '10px', fontSize: '18px', fontWeight: 'bold' }}>{title}</h3>
+      <p style={{ fontSize: '14px', margin: '0px 10px', textAlign: 'center' }}>{description}</p>
     </div>
   );
 };
+
 
 export default Home;
 
