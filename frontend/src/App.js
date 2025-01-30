@@ -19,6 +19,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<Home/>} />
+        <Route path="/about-platform" component={AboutPlatform} />
         <Route path='/feature1' element={<TeamAnalysis/>} />
         <Route path='/feature2' element={<SuitedPlayer/>} />
         <Route path='/details' element={<Details/>} />

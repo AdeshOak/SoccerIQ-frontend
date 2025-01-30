@@ -47,7 +47,7 @@ const Home = () => {
             Unlock the power of soccer data analytics.
           </p>
           <button
-            onClick={() => window.location.href = "/features"}
+            onClick={() => window.location.href = "/about-platform"}
             style={{
               backgroundColor: '#28a745',
               color: 'white',
