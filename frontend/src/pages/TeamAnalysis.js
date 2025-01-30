@@ -284,82 +284,63 @@ const TeamAnalysis = () =>{
 </div>
    
 
-    {/* First Plot*/}
-    <div style={{marginTop:'20px',padding:'10px'}}>
-    <Divider>
-        <Chip color="success" size="medium" startDecorator={<SportsScoreIcon/>} sx={{width:'200px',borderRadius:'30px',fontSize:'1.2rem',padding:'5px'}}>
-          Goals
-        </Chip>
-      </Divider>
-  <Box sx={{ marginLeft:'45px',marginTop:'10px',display: 'flex', flexDirection: 'row', gap: 2 ,width:'1300px',padding:'2em'}}>
-    <LineChart chartLabel={"Goals"}  labels={graph1y} data={graph1x} color={'green'} sx={{margin:'50px',width:'50%'}}/>
-    <Divider orientation="vertical"></Divider>
-    <div style={{width:'600px',marginTop:'300px'}}>
-  {content1}
-  </div>
+    {/* First Plot */}
+<div style={{ marginTop: '20px', padding: '10px' }}>
+  <Divider>
+    <Chip color="success" size="medium" startDecorator={<SportsScoreIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
+      Goals
+    </Chip>
+  </Divider>
+  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
+    <LineChart chartLabel={"Goals"} labels={graph1y} data={graph1x} color={'green'} sx={{ width: '48%' }} />
+    <div style={{ width: '48%' }}>
+      {content1}
+    </div>
   </Box>
 </div>
 
-
-
-{/* Second Plot*/}
-<div style={{marginTop:'60px'}}>
-<Divider>
-        <Chip  color="primary" size="medium" startDecorator={<TransformIcon/>} sx={{width:'200px',borderRadius:'30px',fontSize:'1.2rem',padding:'5px'}}>
-          Substitutions
-        </Chip>
-      </Divider>
-  <Box sx={{ marginLeft:'45px',marginTop:'10px',display: 'flex', flexDirection: 'row', gap: 2 ,width:'1300px',padding:'2em'}}>
-  <div style={{width:'600px'}}>
-  <div style={{width:'600px',marginTop:'100px'}}>
-  {content2}
-  </div>
-  </div>
-    <Divider orientation="vertical"></Divider>
-    
-    <LineChart chartLabel={"Substitutions"}  labels={graph2y} data={graph2x} color={'blue'}sx={{margin:'50px',width:'50%'}}/>
+{/* Second Plot */}
+<div style={{ marginTop: '60px' }}>
+  <Divider>
+    <Chip color="primary" size="medium" startDecorator={<TransformIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
+      Substitutions
+    </Chip>
+  </Divider>
+  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
+    <div style={{ width: '48%' }}>
+      {content2}
+    </div>
+    <LineChart chartLabel={"Substitutions"} labels={graph2y} data={graph2x} color={'blue'} sx={{ width: '48%' }} />
   </Box>
 </div>
 
-
-
-{/* Third Plot*/}
-<div style={{marginTop:'60px'}}>
-
-
-<Divider>
-        <Chip color="danger" size="medium" startDecorator={<DangerousIcon/>} sx={{width:'200px',borderRadius:'30px',fontSize:'1.2rem',padding:'5px'}}>
-          Red Cards
-        </Chip>
-      </Divider>
-  <Box sx={{ marginLeft:'45px',marginTop:'10px',display: 'flex', flexDirection: 'row', gap: 2 ,width:'1300px',padding:'2em'}}>
-    <LineChart chartLabel={"Red Cards"}  labels={graph3y} data={graph3x}  sx={{margin:'50px',width:'50%'}}/>
-    <Divider orientation="vertical"></Divider>
-    <div style={{width:'600px',marginTop:'100px'}}>
-  {content3}
-  </div>
+{/* Third Plot */}
+<div style={{ marginTop: '60px' }}>
+  <Divider>
+    <Chip color="danger" size="medium" startDecorator={<DangerousIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
+      Red Cards
+    </Chip>
+  </Divider>
+  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
+    <LineChart chartLabel={"Red Cards"} labels={graph3y} data={graph3x} sx={{ width: '48%' }} />
+    <div style={{ width: '48%' }}>
+      {content3}
+    </div>
   </Box>
 </div>
 
-
-
-{/* Fourth Plot*/}
-<div style={{marginTop:'60px',marginBottom:'35px'}}>
-
-<Divider>
-        <Chip  color="warning" size="medium" startDecorator={<WarningAmberIcon/>} sx={{width:'200px',borderRadius:'30px',fontSize:'1.2rem',padding:'5px'}}>
-          Yellow Cards
-        </Chip>
-      </Divider>
-  <Box sx={{ marginLeft:'45px',marginTop:'10px',display: 'flex', flexDirection: 'row', gap: 2 ,width:'1300px',padding:'2em'}}>
-    <div style={{width:'600px'}}>
-    <div style={{width:'600px',marginTop:'100px'}}>
-  {content4}
-  </div>
-  </div>
-    <Divider orientation="vertical"></Divider>
-    
-    <LineChart chartLabel={"Yellow Cards"}  labels={graph4y} data={graph4x} color={'orange'} sx={{margin:'50px',width:'50%'}}/>
+{/* Fourth Plot */}
+<div style={{ marginTop: '60px', marginBottom: '35px' }}>
+  <Divider>
+    <Chip color="warning" size="medium" startDecorator={<WarningAmberIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
+      Yellow Cards
+    </Chip>
+  </Divider>
+  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
+    <div style={{ width: '48%' }}>
+      {content4}
+    </div>
+    <LineChart chartLabel={"Yellow Cards"} labels={graph4y} data={graph4x} color={'orange'} sx={{ width: '48%' }} />
   </Box>
 </div>
 
