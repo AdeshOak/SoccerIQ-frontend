@@ -1,6 +1,6 @@
 import React from 'react';
 //import { ReactComponent as logo } from "./logo.svg";
-import logo from 'frontend/public/SoccerIQ.png'; 
+import logo from 'frontend/src/SoccerIQ.png'; 
 
 
 import {
