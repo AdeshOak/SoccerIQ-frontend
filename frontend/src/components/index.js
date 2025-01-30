@@ -18,7 +18,7 @@ const Navbar = () => {
     <>
       <Nav>
         <NavLink to='/'>
-        <img src={logo} alt="SoccerIQ Logo" style={{ height: '50px', width: '50px' }} />
+        <img src={logo} alt="SoccerIQ Logo" style={{ height: '70px', width: '70px' }} />
         </NavLink>
         <Bars />
         <NavMenu>
