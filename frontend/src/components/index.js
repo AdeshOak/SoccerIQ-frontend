@@ -22,6 +22,9 @@ const Navbar = () => {
         </NavLink>
         <Bars />
         <NavMenu>
+        <NavLink to='/' activeStyle>
+            Home
+          </NavLink>
           <NavLink to='/feature1' activeStyle>
             Team Analysis
           </NavLink>

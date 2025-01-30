@@ -1,11 +1,11 @@
 import React from 'react';
-import backgroundImage from './homebg.jpeg'; // Background image (soccer field, players, etc.)
-import { FaChartBar, FaUsers, FaFootballBall } from 'react-icons/fa'; // Soccer Ball Icon
+import backgroundImage from './homebg.jpeg';
+import { FaChartBar, FaBullseye, FaUsersCog, FaSearch } from 'react-icons/fa';
 
 const Home = () => {
   return (
     <div>
-      {/* Combined Hero Section with background image and overlay */}
+      {/* Hero Section with Background and Overlay */}
       <div style={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden' }}>
         <img
           src={backgroundImage}
@@ -24,7 +24,7 @@ const Home = () => {
             left: 0,
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark overlay for readability
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
           }}
         ></div>
 
@@ -32,7 +32,7 @@ const Home = () => {
         <div
           style={{
             position: 'absolute',
-            top: '50%',
+            top: '30%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             color: 'white',
@@ -44,12 +44,12 @@ const Home = () => {
             Soccer IQ
           </h1>
           <p style={{ fontSize: '24px', margin: '20px', fontWeight: 'lighter' }}>
-            The Power of Soccer Data Analytics
+            Unlock the power of soccer data analytics.
           </p>
           <button
-            onClick={() => window.location.href = "/features"}  // Direct the user to the features page
+            onClick={() => window.location.href = "/features"}
             style={{
-              backgroundColor: '#28a745', // Soccer field green
+              backgroundColor: '#28a745',
               color: 'white',
               padding: '12px 30px',
               border: 'none',
@@ -59,14 +59,14 @@ const Home = () => {
               fontWeight: 'bold',
               transition: 'background-color 0.3s ease',
             }}
-            onMouseOver={(e) => e.target.style.backgroundColor = '#218838'} // Hover effect
+            onMouseOver={(e) => e.target.style.backgroundColor = '#218838'}
             onMouseOut={(e) => e.target.style.backgroundColor = '#28a745'}
           >
             Explore Features
           </button>
         </div>
 
-        {/* Features Section below the Hero Section */}
+        {/* Features Section */}
         <div
           style={{
             position: 'absolute',
@@ -79,31 +79,70 @@ const Home = () => {
             zIndex: 2,
           }}
         >
-          {/* Team Analysis */}
-          <div style={{ textAlign: 'center', color: 'white', maxWidth: '250px' }}>
-            <FaChartBar size={50} color="#28a745" />
-            <h3>Team Analysis</h3>
-            <p>Analyze team performance across various metrics.</p>
-          </div>
+          {/* Feature 1 - Team Analysis */}
+          <FeatureCard
+            icon={<FaChartBar size={50} color="#28a745" />}
+            title="Team Analysis"
+            description="Analyze team performance across various metrics."
+          />
 
-          {/* Player Stats */}
-          <div style={{ textAlign: 'center', color: 'white', maxWidth: '250px' }}>
-            <FaUsers size={50} color="#28a745" />
-            <h3>Player Stats</h3>
-            <p>Get in-depth player statistics and performance insights.</p>
-          </div>
+          {/* Feature 2 - Finding Most Suited Player */}
+          <FeatureCard
+            icon={<FaBullseye size={50} color="#28a745" />}
+            title="Find Best Suited Player"
+            description="Using AI-driven gradient boosting models, predict expected goals and compare with actual to identify top performers."
+          />
 
-          {/* Prediction Models */}
-          <div style={{ textAlign: 'center', color: 'white', maxWidth: '250px' }}>
-            <FaFootballBall size={50} color="#28a745" />
-            <h3>Prediction Models</h3>
-            <p>Predict match outcomes using AI-driven models.</p>
-          </div>
+          {/* Feature 3 - Best Team Formation */}
+          <FeatureCard
+            icon={<FaUsersCog size={50} color="#28a745" />}
+            title="Best Team for Formation"
+            description="Generate the best possible team lineup for any formation based on data analytics."
+          />
+
+          {/* Feature 4 - Player Scouting */}
+          <FeatureCard
+            icon={<FaSearch size={50} color="#28a745" />}
+            title="Scout a Player"
+            description="Evaluate player skills and stats to find the best fit for your team."
+          />
         </div>
       </div>
     </div>
   );
 };
 
+// FeatureCard Component
+const FeatureCard = ({ icon, title, description }) => {
+  return (
+    <div
+      style={{
+        textAlign: 'center',
+        color: 'white',
+        maxWidth: '250px',
+        padding: '20px',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark card for readability
+        borderRadius: '12px',
+        transition: 'transform 0.3s ease, background-color 0.3s ease',
+      }}
+      onMouseOver={(e) => {
+        e.currentTarget.style.transform = 'scale(1.05)';
+        e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+      }}
+      onMouseOut={(e) => {
+        e.currentTarget.style.transform = 'scale(1)';
+        e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+      }}
+    >
+      {icon}
+      <h3 style={{ marginTop: '10px' }}>{title}</h3>
+      <p style={{ fontSize: '14px', margin: '10px 0' }}>{description}</p>
+    </div>
+  );
+};
+
 export default Home;
+
+
+
 
