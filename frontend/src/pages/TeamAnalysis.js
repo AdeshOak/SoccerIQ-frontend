@@ -20,6 +20,9 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 //Importing background image
 import backgroundImage from './feature1bg.jpeg';
 
+//importing css file 
+import "./TeamAnalysis.css";
+
 
 
 
@@ -238,8 +241,11 @@ const TeamAnalysis = () =>{
             } catch (error) {
                 console.error("Error fetching data from backend:", error);
             }
-            setLoading(false);
-            console.log("Button clicked!");
+            finally {
+              // Set loading state to false once data is fetched or an error occurs
+              setLoading(false);
+            }
+            //console.log("Button clicked!");
         };
     
 
@@ -290,6 +296,8 @@ const TeamAnalysis = () =>{
       {loading && (
         <div className="loading-overlay">
           <div className="loading-content">
+            {/* Simple spinner animation */}
+            <div className="spinner"></div>
             <span role="img" aria-label="emoji">💻</span>
             <p>The model is working hard to crunch numbers for you. Hang tight to see the visualizations...</p>
           </div>
