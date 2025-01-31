@@ -208,6 +208,8 @@ const TeamAnalysis = () =>{
       const content4 =`Yellow card have a similar trend like red cards which significantly increases during the end of the match. But unlike red cards yellow card are received during the entire match. They might be relatively less than the onces scored at the end but this helps us in understanding the aggregation of the team.`;
 
 
+
+    const [loading, setLoading] = useState(false); 
     const [team,setTeam] = useState('')
     const handleTeamSelection = (event, value) => {
             setTeam(value)
@@ -220,6 +222,7 @@ const TeamAnalysis = () =>{
             const data = { 'team': team };
             const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
             console.log(backendUrl);
+            setLoading(true);
     
             try {
                 const response = await axios.post(`${backendUrl}/feature1`, data);
@@ -235,7 +238,7 @@ const TeamAnalysis = () =>{
             } catch (error) {
                 console.error("Error fetching data from backend:", error);
             }
-    
+            setLoading(false);
             console.log("Button clicked!");
         };
     
@@ -273,11 +276,25 @@ const TeamAnalysis = () =>{
         sx={{ width: 300 , margin:4}}
         onChange={handleTeamSelection}
     />
-    <Button variant="soft" endDecorator={<KeyboardArrowRight />} color="success"
-    sx={{ width: 300 , margin:4}}
-    onClick={handleClick}>
+    <Button 
+        variant="soft" 
+        endDecorator={<KeyboardArrowRight />} 
+        color="success"
+        sx={{ width: 300, margin: 4 }}
+        onClick={handleClick}
+      >
         Analyze
       </Button>
+
+      {/* Show loading spinner and message when loading state is true */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-content">
+            <span role="img" aria-label="emoji">💻</span>
+            <p>The model is working hard to crunch numbers for you. Hang tight to see the visualizations...</p>
+          </div>
+        </div>
+      )}
       
     </Box >
     </div>
