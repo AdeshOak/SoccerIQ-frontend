@@ -1,8 +1,27 @@
-// Import statements
+import React,{useRef,useEffect, useState} from "react"
+import Autocomplete from '@mui/joy/Autocomplete';
+import Box from '@mui/joy/Box';
+import Stack from '@mui/joy/Stack';
+import Divider from '@mui/joy/Divider';
+import Chip from '@mui/joy/Chip';
+import Input from '@mui/joy/Input';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import Button from '@mui/joy/Button';
+import BarChart from "../BarChart";
+import LineChart from "../LineChart";
+import axios from 'axios'
+
+//icons for chips
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import TransformIcon from '@mui/icons-material/Transform';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+
+//Importing background image
+import backgroundImage from './feature1bg.jpeg';
+
+//importing css file 
+import "./TeamAnalysis.css";
 
 const TeamAnalysis = () => {
     const [graphData, setGraphData] = useState(null);
