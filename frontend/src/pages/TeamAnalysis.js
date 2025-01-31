@@ -195,20 +195,21 @@ const TeamAnalysis = () => {
         let segmentSize = Math.ceil(data.length / 4); 
 
         for (let i = 0; i < data.length; i += segmentSize) {
-            let segment = data.slice(i, i + segmentSize);
-            let segMax = Math.max(...segment);
-            let segMin = Math.min(...segment);
-            let segStart = i;
-            let segEnd = i + segment.length - 1;
-            trendSegments.push(`${label} ranged from ${segMin} to ${segMax} between minutes ${segStart} and ${segEnd}.`);
-        }
+          let segment = data.slice(i, i + segmentSize);
+          let segMax = Math.max(...segment);
+          let segMin = Math.min(...segment);
+          let segStart = i;
+          let segEnd = i + segment.length - 1;
+          trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.`);
+      }
 
-        insights.push(`${label} peaked at ${maxVal} at minute ${maxIndex}.`);
-        insights.push(`${label} had the lowest value of ${minVal} at minute ${minIndex}.`);
-        insights.push(...trendSegments);
+      insights.push(`1. Highest: ${label} peaked at **${maxVal}** at minute **${maxIndex}**.`);
+      insights.push(`2. Lowest: ${label} had lowest value of **${minVal}** at minute **${minIndex}**.`);
+      insights.push("3. Time Chunk Analysis:");
+      insights.push(...trendSegments);
 
-        return insights.join(' ');
-    };
+      return insights.join('\n');
+  };
 
     const handleClick = async () => {
         console.log("Selected team is:", team);
@@ -243,7 +244,7 @@ const TeamAnalysis = () => {
     const sectionStyles = {
         goals: { color: 'success', icon: <SportsScoreIcon /> },
         substitutions: { color: 'primary', icon: <TransformIcon /> },
-        redCards: { color: 'error', icon: <DangerousIcon /> },
+        redCards: { color: 'danger', icon: <DangerousIcon /> },
         yellowCards: { color: 'warning', icon: <WarningAmberIcon /> }
     };
 
@@ -297,7 +298,7 @@ const TeamAnalysis = () => {
                     </Divider>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
                         <LineChart chartLabel={key.charAt(0).toUpperCase() + key.slice(1)} labels={y} data={x} color={sectionStyles[key].color} sx={{ width: '48%' }} />
-                        {!loading && <div style={{ width: '48%' }}>{insights[key]}</div>}
+                        {!loading && <div style={{ width: '48%', textAlign: 'center', fontWeight: 'bold' }}>{insights[key]}</div>}
                     </Box>
                 </div>
             ))}
