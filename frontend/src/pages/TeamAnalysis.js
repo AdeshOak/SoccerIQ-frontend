@@ -282,27 +282,22 @@ const TeamAnalysis = () =>{
         sx={{ width: 300 , margin:4}}
         onChange={handleTeamSelection}
     />
-    <Button 
-        variant="soft" 
-        endDecorator={<KeyboardArrowRight />} 
-        color="success"
-        sx={{ width: 300, margin: 4 }}
-        onClick={handleClick}
-      >
+    <Button variant="soft" endDecorator={<KeyboardArrowRight />} color="success"
+    sx={{ width: 300 , margin:4}}
+    onClick={handleClick}>
         Analyze
-      </Button>
+</Button>
 
-      {/* Show loading spinner and message when loading state is true */}
-      {loading && (
-        <div className="loading-overlay">
-          <div className="loading-content">
-            {/* Simple spinner animation */}
-            <div className="spinner"></div>
-            <span role="img" aria-label="emoji">💻</span>
-            <p>The model is working hard to crunch numbers for you. Hang tight to see the visualizations...</p>
-          </div>
-        </div>
-      )}
+{loading && (
+  <div className="loading-overlay">
+    <div className="loading-spinner"></div>
+    <div className="loading-text">
+      <p>The model is working hard to crunch numbers for you.</p>
+      <p>Hang tight to see the visualizations...</p>
+    </div>
+  </div>
+)}
+
       
     </Box >
     </div>
