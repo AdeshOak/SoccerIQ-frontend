@@ -200,12 +200,12 @@ const TeamAnalysis = () => {
           let segMin = Math.min(...segment);
           let segStart = i;
           let segEnd = i + segment.length - 1;
-          trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.`);
+          trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.#`);
       }
 
-      insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.`);
-      insights.push(`2. Lowest: ${label} had lowest value of ${minVal} at minute ${minIndex}.`);
-      insights.push("3. Time Chunk Analysis:");
+      insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.#`);
+      insights.push(`2. Lowest: ${label} had lowest value of ${minVal} at minute ${minIndex}.#`);
+      insights.push("3. Time Chunk Analysis:#");
       insights.push(...trendSegments);
       console.log(insights)
       return insights.join('\n');
@@ -300,7 +300,7 @@ const TeamAnalysis = () => {
                         <LineChart chartLabel={key.charAt(0).toUpperCase() + key.slice(1)} labels={y} data={x} color={sectionStyles[key].color} sx={{ width: '48%' }} />
                         {!loading && (
   <div style={{ width: '48%', textAlign: 'center', fontWeight: 'bold' }}>
-    {insights[key].split('.').map((item, index) => (
+    {insights[key].split('#').map((item, index) => (
       item.trim() && <div key={index}>{item.trim()}.</div> // Trim and ensure no empty lines
     ))}
   </div>
