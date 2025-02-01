@@ -207,7 +207,7 @@ const TeamAnalysis = () => {
       insights.push(`2. Lowest: ${label} had lowest value of <strong>${minVal}</strong> at minute <strong>${minIndex}</strong>.\n`);
       insights.push("3. Time Chunk Analysis:");
       insights.push(...trendSegments);
-
+      console.log(insights)
       return insights.join('\n');
   };
 
