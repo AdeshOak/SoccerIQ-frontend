@@ -200,11 +200,11 @@ const TeamAnalysis = () => {
           let segMin = Math.min(...segment);
           let segStart = i;
           let segEnd = i + segment.length - 1;
-          trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.`);
+          trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.\n`);
       }
 
-      insights.push(`1. Highest: ${label} peaked at **${maxVal}** at minute **${maxIndex}**.`);
-      insights.push(`2. Lowest: ${label} had lowest value of **${minVal}** at minute **${minIndex}**.`);
+      insights.push(`1. Highest: ${label} peaked at <strong>${maxVal}</strong> at minute <strong>${maxIndex}</strong>.\n`);
+      insights.push(`2. Lowest: ${label} had lowest value of <strong>${minVal}</strong> at minute <strong>${minIndex}</strong>.\n`);
       insights.push("3. Time Chunk Analysis:");
       insights.push(...trendSegments);
 
