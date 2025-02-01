@@ -297,14 +297,14 @@ const TeamAnalysis = () => {
                         </Chip>
                     </Divider>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
-                        <LineChart chartLabel={key.charAt(0).toUpperCase() + key.slice(1)} labels={y} data={x} color={sectionStyles[key].color} sx={{ width: '48%' }} />
+                        <LineChart color={sectionStyles[key].color} chartLabel={key.charAt(0).toUpperCase() + key.slice(1)} labels={y} data={x} sx={{ width: '48%' }} />
                         {!loading && (
-  <div style={{ width: '48%', textAlign: 'center', fontWeight: 'bold' }}>
-    {insights[key].split('#').map((item, index) => (
-      item.trim() && <div key={index}>{item.trim()}.</div> // Trim and ensure no empty lines
-    ))}
-  </div>
-)}
+                          <div style={{ width: '48%', textAlign: 'justify', fontWeight: 'bold' , marginTop: '100px'}}>
+                            {insights[key].split('#').map((item, index) => (
+                              item.trim() && <div key={index}>{item.trim()}</div> // Trim and ensure no empty lines
+                            ))}
+                          </div>
+                        )}
                     </Box>
                 </div>
             ))}
