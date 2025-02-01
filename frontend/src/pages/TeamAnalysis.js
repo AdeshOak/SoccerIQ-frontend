@@ -200,11 +200,11 @@ const TeamAnalysis = () => {
           let segMin = Math.min(...segment);
           let segStart = i;
           let segEnd = i + segment.length - 1;
-          trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.\n`);
+          trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.`);
       }
 
-      insights.push(`1. Highest: ${label} peaked at <strong>${maxVal}</strong> at minute <strong>${maxIndex}</strong>.\n`);
-      insights.push(`2. Lowest: ${label} had lowest value of <strong>${minVal}</strong> at minute <strong>${minIndex}</strong>.\n`);
+      insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.`);
+      insights.push(`2. Lowest: ${label} had lowest value of ${minVal} at minute ${minIndex}.`);
       insights.push("3. Time Chunk Analysis:");
       insights.push(...trendSegments);
       console.log(insights)
@@ -298,7 +298,13 @@ const TeamAnalysis = () => {
                     </Divider>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
                         <LineChart chartLabel={key.charAt(0).toUpperCase() + key.slice(1)} labels={y} data={x} color={sectionStyles[key].color} sx={{ width: '48%' }} />
-                        {!loading && <div style={{ width: '48%', textAlign: 'center', fontWeight: 'bold' }}>{insights[key]}</div>}
+                        {!loading && (
+  <div style={{ width: '48%', textAlign: 'center', fontWeight: 'bold' }}>
+    {insights[key].split('.').map((item, index) => (
+      item.trim() && <div key={index}>{item.trim()}.</div> // Trim and ensure no empty lines
+    ))}
+  </div>
+)}
                     </Box>
                 </div>
             ))}
