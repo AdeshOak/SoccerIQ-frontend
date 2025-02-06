@@ -242,10 +242,10 @@ const TeamAnalysis = () => {
     };
 
     const sectionStyles = {
-        goals: { color: 'success', icon: <SportsScoreIcon /> },
-        substitutions: { color: 'primary', icon: <TransformIcon /> },
-        redCards: { color: 'danger', icon: <DangerousIcon /> },
-        yellowCards: { color: 'warning', icon: <WarningAmberIcon /> }
+        goals: { color: 'success', icon: <SportsScoreIcon />, graphcolor: 'green[500]' },
+        substitutions: { color: 'primary', icon: <TransformIcon />, graphcolor: 'blue[500]' },
+        redCards: { color: 'danger', icon: <DangerousIcon />, graphcolor: 'red[500]' },
+        yellowCards: { color: 'warning', icon: <WarningAmberIcon />, graphcolor: 'yellow[700]' }
     };
 
     return (
@@ -298,20 +298,7 @@ const TeamAnalysis = () => {
                         </Chip>
                     </Divider>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
-                    <LineChart
-  chartLabel={key.charAt(0).toUpperCase() + key.slice(1)}
-  labels={y}
-  data={x}
-  options={{
-    datasets: [
-      {
-        borderColor: sectionStyles[key].color, // Set the line color
-        backgroundColor: 'transparent', // Optional: Make the fill transparent if you don't want a fill
-      },
-    ],
-  }}
-  sx={{ width: '48%' }}
-/>
+                    <LineChart color={sectionStyles[key].graphcolor} chartLabel={key.charAt(0).toUpperCase() + key.slice(1)} labels={y} data={x} sx={{ width: '48%' }} />
                         {!loading && (
                           <div style={{ width: '48%', textAlign: 'justify', fontWeight: 'bold' , marginTop: '100px'}}>
                             {insights[key].split('#').map((item, index) => (
