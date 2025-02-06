@@ -20,6 +20,9 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 //Importing background image
 import backgroundImage from './feature1bg.jpeg';
 
+//importing colors 
+import { green, blue, red, yellow } from '@mui/material/colors';
+
 //importing css file 
 import "./TeamAnalysis.css";
 
@@ -242,10 +245,10 @@ const TeamAnalysis = () => {
     };
 
     const sectionStyles = {
-        goals: { color: 'success', icon: <SportsScoreIcon />, graphcolor: 'green[500]' },
-        substitutions: { color: 'primary', icon: <TransformIcon />, graphcolor: 'blue[500]' },
-        redCards: { color: 'danger', icon: <DangerousIcon />, graphcolor: 'red[500]' },
-        yellowCards: { color: 'warning', icon: <WarningAmberIcon />, graphcolor: 'yellow[700]' }
+        goals: { color: 'success', icon: <SportsScoreIcon />, graphcolor: green[500] },
+        substitutions: { color: 'primary', icon: <TransformIcon />, graphcolor: blue[500] },
+        redCards: { color: 'danger', icon: <DangerousIcon />, graphcolor: red[500] },
+        yellowCards: { color: 'warning', icon: <WarningAmberIcon />, graphcolor: yellow[700] }
     };
 
     return (
