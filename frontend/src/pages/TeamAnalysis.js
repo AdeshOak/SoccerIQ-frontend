@@ -294,6 +294,7 @@ const TeamAnalysis = () => {
 
 
             {graphData && insights && Object.entries(graphData).map(([key, { x, y }]) => (
+                console.log('Graph color for', key, sectionStyles[key].graphcolor),
                 <div key={key} style={{ marginTop: '60px', padding: '10px' }}>
                     <Divider>
                         <Chip color={sectionStyles[key].color} size="medium" startDecorator={sectionStyles[key].icon} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
@@ -315,7 +316,6 @@ const TeamAnalysis = () => {
                         }}
                         sx={{ width: '48%' }}
                         />
-
                         {!loading && (
                           <div style={{ width: '48%', textAlign: 'justify', fontWeight: 'bold' , marginTop: '100px'}}>
                             {insights[key].split('#').map((item, index) => (
