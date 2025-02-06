@@ -298,7 +298,21 @@ const TeamAnalysis = () => {
                         </Chip>
                     </Divider>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
-                    <LineChart borderColor={sectionStyles[key].graphcolor} chartLabel={key.charAt(0).toUpperCase() + key.slice(1)} labels={y} data={x} sx={{ width: '48%' }} />
+                    <LineChart
+                        chartLabel={key.charAt(0).toUpperCase() + key.slice(1)}
+                        labels={y}
+                        data={x}
+                        options={{
+                            datasets: [
+                            {
+                                borderColor: sectionStyles[key].color, // Use the actual color here
+                                backgroundColor: 'transparent', // Optional: Make the fill transparent
+                            },
+                            ],
+                        }}
+                        sx={{ width: '48%' }}
+                        />
+
                         {!loading && (
                           <div style={{ width: '48%', textAlign: 'justify', fontWeight: 'bold' , marginTop: '100px'}}>
                             {insights[key].split('#').map((item, index) => (
