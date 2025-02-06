@@ -305,17 +305,24 @@ const TeamAnalysis = () => {
                     <LineChart
                         chartLabel={key.charAt(0).toUpperCase() + key.slice(1)}
                         labels={y}
-                        data={x}
-                        options={{
+                        data={{
+                            labels: y, // Label for X-axis
                             datasets: [
                             {
-                                borderColor: sectionStyles[key].graphcolor, // Use the actual color here
-                                backgroundColor: 'transparent', // Optional: Make the fill transparent
+                                label: key.charAt(0).toUpperCase() + key.slice(1),
+                                data: x, // Actual data for the graph
+                                borderColor: sectionStyles[key].graphcolor, // Line color
+                                backgroundColor: 'transparent', // Transparent background
+                                fill: false, // No fill under the line
+                                tension: 0.4, // Smooth line (optional)
+                                pointBorderColor: sectionStyles[key].graphcolor, // Optional: Set point color
+                                pointBackgroundColor: '#fff', // Optional: Set point background to white
                             },
                             ],
                         }}
                         sx={{ width: '48%' }}
                         />
+
                         {!loading && (
                           <div style={{ width: '48%', textAlign: 'justify', fontWeight: 'bold' , marginTop: '100px'}}>
                             {insights[key].split('#').map((item, index) => (
