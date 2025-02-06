@@ -309,7 +309,7 @@ const TeamAnalysis = () => {
                         options={{
                             datasets: [
                             {
-                                borderColor: sectionStyles[key].color, // Use the actual color here
+                                borderColor: sectionStyles[key].graphcolor, // Use the actual color here
                                 backgroundColor: 'transparent', // Optional: Make the fill transparent
                             },
                             ],
