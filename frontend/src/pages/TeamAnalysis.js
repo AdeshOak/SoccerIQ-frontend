@@ -226,12 +226,24 @@ const TeamAnalysis = () => {
             const response = await axios.post(`${backendUrl}/feature1`, data);
             console.log(response.data);
             const newGraphData = {
-                goals: { x: response.data.graph1.data, y: response.data.graph1.labels },
-                substitutions: { x: response.data.graph2.data, y: response.data.graph2.labels },
-                redCards: { x: response.data.graph3.data, y: response.data.graph3.labels },
-                yellowCards: { x: response.data.graph4.data, y: response.data.graph4.labels }
-            };
-            setGraphData(newGraphData);
+                goals: {
+                  labels: response.data.graph1.labels,
+                  data: response.data.graph1.data,
+                },
+                substitutions: {
+                  labels: response.data.graph2.labels,
+                  data: response.data.graph2.data,
+                },
+                redCards: {
+                  labels: response.data.graph3.labels,
+                  data: response.data.graph3.data,
+                },
+                yellowCards: {
+                  labels: response.data.graph4.labels,
+                  data: response.data.graph4.data,
+                }
+              };
+
             setInsights(
                 Object.fromEntries(
                     Object.entries(newGraphData).map(([key, graph]) => [key, generateGraphInsights(graph, key.charAt(0).toUpperCase() + key.slice(1))])
@@ -293,46 +305,55 @@ const TeamAnalysis = () => {
             </div>
 
 
-            {graphData && insights && Object.entries(graphData).map(([key, { x, y }]) => (
-                console.log('Graph color for', key, sectionStyles[key].graphcolor),
-                <div key={key} style={{ marginTop: '60px', padding: '10px' }}>
-                    <Divider>
-                        <Chip color={sectionStyles[key].color} size="medium" startDecorator={sectionStyles[key].icon} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
-                            {key.charAt(0).toUpperCase() + key.slice(1)}
-                        </Chip>
-                    </Divider>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
-                    <LineChart
-                        chartLabel={key.charAt(0).toUpperCase() + key.slice(1)}
-                        labels={y}
-                        data={{
-                            labels: y, // Label for X-axis
-                            datasets: [
-                            {
-                                label: key.charAt(0).toUpperCase() + key.slice(1),
-                                data: x, // Actual data for the graph
-                                borderColor: sectionStyles[key].graphcolor, // Line color
-                                backgroundColor: 'transparent', // Transparent background
-                                fill: false, // No fill under the line
-                                tension: 0.4, // Smooth line (optional)
-                                pointBorderColor: sectionStyles[key].graphcolor, // Optional: Set point color
-                                pointBackgroundColor: '#fff', // Optional: Set point background to white
-                            },
-                            ],
-                        }}
-                        sx={{ width: '48%' }}
-                        />
+            {graphData && insights && Object.entries(graphData).map(([key, chartData]) => {
+        const { labels, data } = chartData;
+        const { graphcolor } = sectionStyles[key];
+        
+        return (
+          <div key={key} style={{ marginTop: '60px', padding: '10px' }}>
+            <Divider>
+              <Chip color={sectionStyles[key].color} size="medium" 
+                    startDecorator={sectionStyles[key].icon} 
+                    sx={{ width: '200px', borderRadius: '30px', 
+                          fontSize: '1.2rem', padding: '5px' }}>
+                {key.charAt(0).toUpperCase() + key.slice(1)}
+              </Chip>
+            </Divider>
 
-                        {!loading && (
-                          <div style={{ width: '48%', textAlign: 'justify', fontWeight: 'bold' , marginTop: '100px'}}>
-                            {insights[key].split('#').map((item, index) => (
-                              item.trim() && <div key={index}>{item.trim()}</div> // Trim and ensure no empty lines
-                            ))}
-                          </div>
-                        )}
-                    </Box>
-                </div>
-            ))}
+            <Box sx={{ 
+              display: 'flex', 
+              flexWrap: 'wrap', 
+              gap: 2, 
+              justifyContent: 'space-between', 
+              marginTop: '20px',
+              alignItems: 'center'
+            }}>
+              <LineChart
+                chartLabel={key.charAt(0).toUpperCase() + key.slice(1)}
+                labels={labels}
+                data={data}
+                color={graphcolor}
+                style={{ 
+                  width: '60%', 
+                  height: '400px',
+                  marginLeft: '0' // Override sample's marginLeft
+                }}
+              />
+
+              <div style={{ 
+                width: '35%', 
+                padding: '20px', 
+                textAlign: 'justify',
+                marginTop: '-50px' // Adjust vertical alignment
+              }}>
+                {insights[key].split('#').map((item, index) => (
+                  item.trim() && <p key={index} style={{ margin: '10px 0' }}>{item.trim()}</p>
+                ))}
+              </div>
+            </Box>
+          </div>
+        );
+      })}
         </div>
     );
 }
