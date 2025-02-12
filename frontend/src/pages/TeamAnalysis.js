@@ -184,35 +184,38 @@ const TeamAnalysis = () => {
     };
 
     const generateGraphInsights = (graph, label) => {
-        const { x: data } = graph;
+        // Destructure the CORRECT property names from the graph object
+        const { data = [] } = graph; // Changed from 'x' to 'data'
         let insights = [];
-
-        if (data.length === 0) return "No data available.";
-
+    
+        if (!Array.isArray(data) || data.length === 0) {
+            return "No data available.";
+        }
+    
         const maxVal = Math.max(...data);
         const minVal = Math.min(...data);
         const maxIndex = data.indexOf(maxVal);
         const minIndex = data.indexOf(minVal);
-
+    
         let trendSegments = [];
-        let segmentSize = Math.ceil(data.length / 4); 
-
+        const segmentSize = Math.ceil(data.length / 4);
+    
         for (let i = 0; i < data.length; i += segmentSize) {
-          let segment = data.slice(i, i + segmentSize);
-          let segMax = Math.max(...segment);
-          let segMin = Math.min(...segment);
-          let segStart = i;
-          let segEnd = i + segment.length - 1;
-          trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.#`);
-      }
-
-      insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.#`);
-      insights.push(`2. Lowest: ${label} had lowest value of ${minVal} at minute ${minIndex}.#`);
-      insights.push("3. Time Chunk Analysis:#");
-      insights.push(...trendSegments);
-      console.log(insights)
-      return insights.join('\n');
-  };
+            const segment = data.slice(i, i + segmentSize);
+            const segMax = Math.max(...segment);
+            const segMin = Math.min(...segment);
+            const segStart = i;
+            const segEnd = i + segment.length - 1;
+            trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.#`);
+        }
+    
+        insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.#`);
+        insights.push(`2. Lowest: ${label} had lowest value of ${minVal} at minute ${minIndex}.#`);
+        insights.push("3. Time Chunk Analysis:#");
+        insights.push(...trendSegments);
+        
+        return insights.join('\n');
+    };
 
     const handleClick = async () => {
         console.log("Selected team is:", team);
