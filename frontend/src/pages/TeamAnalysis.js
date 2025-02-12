@@ -20,18 +20,29 @@ import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 //Importing background image
 import backgroundImage from './feature1bg.jpeg';
 
-//importing colors 
-import { green, blue, red, yellow } from '@mui/material/colors';
-
 //importing css file 
 import "./TeamAnalysis.css";
 
-const TeamAnalysis = () => {
-    const [graphData, setGraphData] = useState(null);
-    
-    const [loading, setLoading] = useState(false);
-    const [team, setTeam] = useState('');
-    const [insights, setInsights] = useState(null);
+
+
+
+
+
+const TeamAnalysis = () =>{
+
+    const [graph1x, setgraph1x] = useState([])
+    const [graph1y, setgraph1y] = useState([])
+
+
+    const [graph2x, setgraph2x] = useState([])
+    const [graph2y, setgraph2y] = useState([])
+
+    const [graph3x, setgraph3x] = useState([])
+    const [graph3y, setgraph3y] = useState([])
+
+    const [graph4x, setgraph4x] = useState([])
+    const [graph4y, setgraph4y] = useState([])
+
 
     const teams = [
       { name: 'Hamburg SV' },
@@ -178,187 +189,185 @@ const TeamAnalysis = () => {
       { name: 'RB Leipzig' }
       ];
 
+
+
+
+
+
+
+      
+      
+      
+      
+      
+      
+
+
+
+
+      const content1 = `As graph shows most of the goals are scored during the last 5 minutes of the game. Team tries to push aggressively. We can also notice a spike just before the half time.`
+      const content2 =`Around the half time there are a lot of substitutions and we start seeing more and more substitution towards the end. `;
+      const content3 =`We can see from the graph that team begins to be aggressive towards the end of the game and this results in a red card.`;
+      const content4 =`Yellow card have a similar trend like red cards which significantly increases during the end of the match. But unlike red cards yellow card are received during the entire match. They might be relatively less than the onces scored at the end but this helps us in understanding the aggregation of the team.`;
+
+
+
+    const [loading, setLoading] = useState(false); 
+    const [team,setTeam] = useState('')
     const handleTeamSelection = (event, value) => {
-        setTeam(value);
-        console.log(value);
-    };
+            setTeam(value)
+            console.log(value); // logs the selected value
+          }
 
-    const generateGraphInsights = (graph, label) => {
-        // Destructure the CORRECT property names from the graph object
-        const { data = [] } = graph; // Changed from 'x' to 'data'
-        let insights = [];
+          const handleClick = async () => {
+            console.log("Selected team is:", team);
     
-        if (!Array.isArray(data) || data.length === 0) {
-            return "No data available.";
-        }
+            const data = { 'team': team };
+            const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+            console.log(backendUrl);
+            setLoading(true);
     
-        const maxVal = Math.max(...data);
-        const minVal = Math.min(...data);
-        const maxIndex = data.indexOf(maxVal);
-        const minIndex = data.indexOf(minVal);
+            try {
+                const response = await axios.post(`${backendUrl}/feature1`, data);
+                console.log(response.data);
+                setgraph1x(response.data.graph1.data);
+                setgraph1y(response.data.graph1.labels);
+                setgraph2x(response.data.graph2.data);
+                setgraph2y(response.data.graph2.labels);
+                setgraph3x(response.data.graph3.data);
+                setgraph3y(response.data.graph3.labels);
+                setgraph4x(response.data.graph4.data);
+                setgraph4y(response.data.graph4.labels);
+            } catch (error) {
+                console.error("Error fetching data from backend:", error);
+            }
+            finally {
+              // Set loading state to false once data is fetched or an error occurs
+              setLoading(false);
+            }
+            //console.log("Button clicked!");
+        };
     
-        let trendSegments = [];
-        const segmentSize = Math.ceil(data.length / 4);
-    
-        for (let i = 0; i < data.length; i += segmentSize) {
-            const segment = data.slice(i, i + segmentSize);
-            const segMax = Math.max(...segment);
-            const segMin = Math.min(...segment);
-            const segStart = i;
-            const segEnd = i + segment.length - 1;
-            trendSegments.push(`- Minute ${segStart} to Minute ${segEnd}: ${label} ranged between ${segMin} and ${segMax}.#`);
-        }
-    
-        insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.#`);
-        insights.push(`2. Lowest: ${label} had lowest value of ${minVal} at minute ${minIndex}.#`);
-        insights.push("3. Time Chunk Analysis:#");
-        insights.push(...trendSegments);
-        
-        return insights.join('\n');
-    };
 
-    const handleClick = async () => {
-        console.log("Selected team is:", team);
-        const data = { team };
-        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-        setLoading(true);
-        setGraphData(null);
-        setInsights(null);
-
-        try {
-            const response = await axios.post(`${backendUrl}/feature1`, data);
-            console.log(response.data);
-            const newGraphData = {
-                goals: {
-                  labels: response.data.graph1.labels,
-                  data: response.data.graph1.data,
-                },
-                substitutions: {
-                  labels: response.data.graph2.labels,
-                  data: response.data.graph2.data,
-                },
-                redCards: {
-                  labels: response.data.graph3.labels,
-                  data: response.data.graph3.data,
-                },
-                yellowCards: {
-                  labels: response.data.graph4.labels,
-                  data: response.data.graph4.data,
-                }
-              };
-
-            setInsights(
-                Object.fromEntries(
-                    Object.entries(newGraphData).map(([key, graph]) => [key, generateGraphInsights(graph, key.charAt(0).toUpperCase() + key.slice(1))])
-                )
-            );
-        } catch (error) {
-            console.error("Error fetching data from backend:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const sectionStyles = {
-        goals: { color: 'success', icon: <SportsScoreIcon />, graphcolor: green[500] },
-        substitutions: { color: 'primary', icon: <TransformIcon />, graphcolor: blue[500] },
-        redCards: { color: 'danger', icon: <DangerousIcon />, graphcolor: red[500] },
-        yellowCards: { color: 'warning', icon: <WarningAmberIcon />, graphcolor: yellow[700] }
-    };
-
-    return (
+    return(
         <div>
-            <div style={{ 
-                backgroundImage: `url(${backgroundImage})`, 
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                position: 'relative',
-                height: '50vh'
-            }}>
-                <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    backgroundColor: 'rgba(0,0,0,0.5)'
-                }}>
-                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', margin: '5rem', marginLeft: '20rem', borderRadius: 10, width: '800px', zIndex: 1, backgroundColor: 'white', boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.2)', border: '2px solid black' }}>
-                        <h1 style={{ marginTop: '1rem', marginLeft: '18rem' }}>Team Analysis</h1>
-                        <p style={{ marginTop: '1rem', marginLeft: '10rem' }}>Select a team from the drop-down and analyze its key metrics</p>
-                        <Autocomplete
-                            placeholder="Choose team"
-                            options={teams.map((team) => team.name)}
-                            autoHighlight
-                            sx={{ width: 300, margin: 4 }}
-                            onChange={handleTeamSelection}
-                        />
-                        <Button variant="soft" endDecorator={<KeyboardArrowRight />} color="success" sx={{ width: 300, margin: 4 }} onClick={handleClick}>Analyze</Button>
-                        {loading && (
-                            <div className="loading-overlay">
-                                <div className="loading-spinner"></div>
-                                <div className="loading-text">
-                                    <p>The model is working hard to crunch numbers for you.</p>
-                                    <p>Hang tight to see the visualizations...</p>
-                                </div>
-                            </div>
-                        )}
-                    </Box>
-                </div>
-            </div>
+
+<div style={{ 
+    backgroundImage: `url(${backgroundImage})`, 
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    position: 'relative',
+    height: '50vh',
+    }}>
+    <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0,0,0,0.5)',
+    }}>
 
 
-            {graphData && insights && Object.entries(graphData).map(([key, chartData]) => {
-        const { labels, data } = chartData;
-        const { graphcolor } = sectionStyles[key];
-        
-        return (
-          <div key={key} style={{ marginTop: '60px', padding: '10px' }}>
-            <Divider>
-              <Chip color={sectionStyles[key].color} size="medium" 
-                    startDecorator={sectionStyles[key].icon} 
-                    sx={{ width: '200px', borderRadius: '30px', 
-                          fontSize: '1.2rem', padding: '5px' }}>
-                {key.charAt(0).toUpperCase() + key.slice(1)}
-              </Chip>
-            </Divider>
+            {/*  THIS IS THE TOP SEARCH BOX */}
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' , margin: '5rem',marginLeft:'20rem',borderRadius:10,width:'800px',zIndex:1,backgroundColor: 'white', // add white background
+    boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.2)', // add shadow
+    border: '2px solid black'}}>
+        <h1 style={{marginTop:'1rem',marginLeft:'18rem'}}>Team Analysis</h1>
+        <p style={{marginTop:'1rem',marginLeft:'10rem'}}> Select a team from the drop-down and analyze it's key metrics</p>
+            <Autocomplete
+        placeholder="Choose team"
+        options={teams.map((team) => team.name)}
+        autoHighlight
+        sx={{ width: 300 , margin:4}}
+        onChange={handleTeamSelection}
+    />
+    <Button variant="soft" endDecorator={<KeyboardArrowRight />} color="success"
+    sx={{ width: 300 , margin:4}}
+    onClick={handleClick}>
+        Analyze
+</Button>
 
-            <Box sx={{ 
-              display: 'flex', 
-              flexWrap: 'wrap', 
-              gap: 2, 
-              justifyContent: 'space-between', 
-              marginTop: '20px',
-              alignItems: 'center'
-            }}>
-              <LineChart
-                chartLabel={key.charAt(0).toUpperCase() + key.slice(1)}
-                labels={labels}
-                data={data}
-                color={graphcolor}
-                style={{ 
-                  width: '60%', 
-                  height: '400px',
-                  marginLeft: '0' // Override sample's marginLeft
-                }}
-              />
+{loading && (
+  <div className="loading-overlay">
+    <div className="loading-spinner"></div>
+    <div className="loading-text">
+      <p>The model is working hard to crunch numbers for you.</p>
+      <p>Hang tight to see the visualizations...</p>
+    </div>
+  </div>
+)}
 
-              <div style={{ 
-                width: '35%', 
-                padding: '20px', 
-                textAlign: 'justify',
-                marginTop: '-50px' // Adjust vertical alignment
-              }}>
-                {insights[key].split('#').map((item, index) => (
-                  item.trim() && <p key={index} style={{ margin: '10px 0' }}>{item.trim()}</p>
-                ))}
-              </div>
-            </Box>
-          </div>
-        );
-      })}
+      
+    </Box >
+    </div>
+</div>
+   
+
+    {/* First Plot */}
+<div style={{ marginTop: '20px', padding: '10px' }}>
+  <Divider>
+    <Chip color="success" size="medium" startDecorator={<SportsScoreIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
+      Goals
+    </Chip>
+  </Divider>
+  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
+    <LineChart chartLabel={"Goals"} labels={graph1y} data={graph1x} color={'green'} sx={{ width: '48%' }} />
+    <div style={{ width: '48%' }}>
+      {content1}
+    </div>
+  </Box>
+</div>
+
+{/* Second Plot */}
+<div style={{ marginTop: '60px' }}>
+  <Divider>
+    <Chip color="primary" size="medium" startDecorator={<TransformIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
+      Substitutions
+    </Chip>
+  </Divider>
+  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
+    <div style={{ width: '48%' }}>
+      {content2}
+    </div>
+    <LineChart chartLabel={"Substitutions"} labels={graph2y} data={graph2x} color={'blue'} sx={{ width: '48%' }} />
+  </Box>
+</div>
+
+{/* Third Plot */}
+<div style={{ marginTop: '60px' }}>
+  <Divider>
+    <Chip color="danger" size="medium" startDecorator={<DangerousIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
+      Red Cards
+    </Chip>
+  </Divider>
+  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
+    <LineChart chartLabel={"Red Cards"} labels={graph3y} data={graph3x} sx={{ width: '48%' }} />
+    <div style={{ width: '48%' }}>
+      {content3}
+    </div>
+  </Box>
+</div>
+
+{/* Fourth Plot */}
+<div style={{ marginTop: '60px', marginBottom: '35px' }}>
+  <Divider>
+    <Chip color="warning" size="medium" startDecorator={<WarningAmberIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
+      Yellow Cards
+    </Chip>
+  </Divider>
+  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
+    <div style={{ width: '48%' }}>
+      {content4}
+    </div>
+    <LineChart chartLabel={"Yellow Cards"} labels={graph4y} data={graph4x} color={'orange'} sx={{ width: '48%' }} />
+  </Box>
+</div>
+
+            
         </div>
-    );
+        
+    )
 }
 
 export default TeamAnalysis;
