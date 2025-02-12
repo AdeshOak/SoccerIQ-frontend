@@ -200,15 +200,6 @@ const TeamAnalysis = () =>{
       
       
       
-      
-
-
-
-
-      const content1 = `As graph shows most of the goals are scored during the last 5 minutes of the game. Team tries to push aggressively. We can also notice a spike just before the half time.`
-      const content2 =`Around the half time there are a lot of substitutions and we start seeing more and more substitution towards the end. `;
-      const content3 =`We can see from the graph that team begins to be aggressive towards the end of the game and this results in a red card.`;
-      const content4 =`Yellow card have a similar trend like red cards which significantly increases during the end of the match. But unlike red cards yellow card are received during the entire match. They might be relatively less than the onces scored at the end but this helps us in understanding the aggregation of the team.`;
 
 
 
@@ -247,7 +238,35 @@ const TeamAnalysis = () =>{
             }
             //console.log("Button clicked!");
         };
-    
+
+
+        // Helper function to generate a simple trend insight.
+  // You can enhance this logic as needed.
+  const generateInsight = (label, data) => {
+    if (!data || data.length === 0) {
+      return `No data available for ${label}.`;
+    }
+    if (data.length === 1) {
+      return `Only one data point available for ${label}.`;
+    }
+    const start = data[0];
+    const end = data[data.length - 1];
+    const diff = end - start;
+    if (diff > 0) {
+      return `There is an upward trend in ${label}, increasing from ${start} to ${end}.`;
+    } else if (diff < 0) {
+      return `There is a downward trend in ${label}, decreasing from ${start} to ${end}.`;
+    } else {
+      return `The ${label} remain consistent at ${start}.`;
+    }
+  };
+
+  // Compute insights based on the loaded data
+  const content1 = !loading && graph1x.length > 0 ? generateInsight("Goals", graph1x) : "";
+  const content2 = !loading && graph2x.length > 0 ? generateInsight("Substitutions", graph2x) : "";
+  const content3 = !loading && graph3x.length > 0 ? generateInsight("Red Cards", graph3x) : "";
+  const content4 = !loading && graph4x.length > 0 ? generateInsight("Yellow Cards", graph4x) : "";
+
 
     return(
         <div>
@@ -289,85 +308,159 @@ const TeamAnalysis = () =>{
 </Button>
 
 {loading && (
-  <div className="loading-overlay">
-    <div className="loading-spinner"></div>
-    <div className="loading-text">
-      <p>The model is working hard to crunch numbers for you.</p>
-      <p>Hang tight to see the visualizations...</p>
-    </div>
-  </div>
-)}
-
-      
-    </Box >
-    </div>
-</div>
-   
-
-    {/* First Plot */}
-<div style={{ marginTop: '20px', padding: '10px' }}>
-  <Divider>
-    <Chip color="success" size="medium" startDecorator={<SportsScoreIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
-      Goals
-    </Chip>
-  </Divider>
-  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
-    <LineChart chartLabel={"Goals"} labels={graph1y} data={graph1x} color={'green'} sx={{ width: '48%' }} />
-    <div style={{ width: '48%' }}>
-      {content1}
-    </div>
-  </Box>
-</div>
-
-{/* Second Plot */}
-<div style={{ marginTop: '60px' }}>
-  <Divider>
-    <Chip color="primary" size="medium" startDecorator={<TransformIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
-      Substitutions
-    </Chip>
-  </Divider>
-  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
-    <div style={{ width: '48%' }}>
-      {content2}
-    </div>
-    <LineChart chartLabel={"Substitutions"} labels={graph2y} data={graph2x} color={'blue'} sx={{ width: '48%' }} />
-  </Box>
-</div>
-
-{/* Third Plot */}
-<div style={{ marginTop: '60px' }}>
-  <Divider>
-    <Chip color="danger" size="medium" startDecorator={<DangerousIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
-      Red Cards
-    </Chip>
-  </Divider>
-  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
-    <LineChart chartLabel={"Red Cards"} labels={graph3y} data={graph3x} sx={{ width: '48%' }} />
-    <div style={{ width: '48%' }}>
-      {content3}
-    </div>
-  </Box>
-</div>
-
-{/* Fourth Plot */}
-<div style={{ marginTop: '60px', marginBottom: '35px' }}>
-  <Divider>
-    <Chip color="warning" size="medium" startDecorator={<WarningAmberIcon />} sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}>
-      Yellow Cards
-    </Chip>
-  </Divider>
-  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, justifyContent: 'space-between', marginTop: '20px' }}>
-    <div style={{ width: '48%' }}>
-      {content4}
-    </div>
-    <LineChart chartLabel={"Yellow Cards"} labels={graph4y} data={graph4x} color={'orange'} sx={{ width: '48%' }} />
-  </Box>
-</div>
-
-            
+              <div className="loading-overlay">
+                <div className="loading-spinner"></div>
+                <div className="loading-text">
+                  <p>The model is working hard to crunch numbers for you.</p>
+                  <p>Hang tight to see the visualizations...</p>
+                </div>
+              </div>
+            )}
+          </Box>
         </div>
-        
-    )
-}
+      </div>
+
+      {/* Render charts only when loading is complete and data is available */}
+      {!loading && graph1x.length > 0 && (
+        <>
+          {/* First Plot - Goals */}
+          <div style={{ marginTop: '20px', padding: '10px' }}>
+            <Divider>
+              <Chip
+                color="success"
+                size="medium"
+                startDecorator={<SportsScoreIcon />}
+                sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}
+              >
+                Goals
+              </Chip>
+            </Divider>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 2,
+                justifyContent: 'space-between',
+                marginTop: '20px',
+              }}
+            >
+              <LineChart
+                chartLabel={"Goals"}
+                labels={graph1y}
+                data={graph1x}
+                color={'green'}
+                sx={{ width: '48%' }}
+              />
+              <div style={{ width: '48%' }}>
+                <p>{content1}</p>
+              </div>
+            </Box>
+          </div>
+
+          {/* Second Plot - Substitutions */}
+          <div style={{ marginTop: '60px' }}>
+            <Divider>
+              <Chip
+                color="primary"
+                size="medium"
+                startDecorator={<TransformIcon />}
+                sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}
+              >
+                Substitutions
+              </Chip>
+            </Divider>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 2,
+                justifyContent: 'space-between',
+                marginTop: '20px',
+              }}
+            >
+              <div style={{ width: '48%' }}>
+                <p>{content2}</p>
+              </div>
+              <LineChart
+                chartLabel={"Substitutions"}
+                labels={graph2y}
+                data={graph2x}
+                color={'blue'}
+                sx={{ width: '48%' }}
+              />
+            </Box>
+          </div>
+
+          {/* Third Plot - Red Cards */}
+          <div style={{ marginTop: '60px' }}>
+            <Divider>
+              <Chip
+                color="danger"
+                size="medium"
+                startDecorator={<DangerousIcon />}
+                sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}
+              >
+                Red Cards
+              </Chip>
+            </Divider>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 2,
+                justifyContent: 'space-between',
+                marginTop: '20px',
+              }}
+            >
+              <LineChart
+                chartLabel={"Red Cards"}
+                labels={graph3y}
+                data={graph3x}
+                sx={{ width: '48%' }}
+              />
+              <div style={{ width: '48%' }}>
+                <p>{content3}</p>
+              </div>
+            </Box>
+          </div>
+
+          {/* Fourth Plot - Yellow Cards */}
+          <div style={{ marginTop: '60px', marginBottom: '35px' }}>
+            <Divider>
+              <Chip
+                color="warning"
+                size="medium"
+                startDecorator={<WarningAmberIcon />}
+                sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}
+              >
+                Yellow Cards
+              </Chip>
+            </Divider>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 2,
+                justifyContent: 'space-between',
+                marginTop: '20px',
+              }}
+            >
+              <div style={{ width: '48%' }}>
+                <p>{content4}</p>
+              </div>
+              <LineChart
+                chartLabel={"Yellow Cards"}
+                labels={graph4y}
+                data={graph4x}
+                color={'orange'}
+                sx={{ width: '48%' }}
+              />
+            </Box>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 export default TeamAnalysis;
