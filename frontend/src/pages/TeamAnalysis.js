@@ -240,7 +240,7 @@ const TeamAnalysis = () =>{
         };
 
 
-        const generateGraphInsights = (graph, label) => {
+        const generateInsight = (graph, label) => {
             // Assume graph.x holds the minute-by-minute data values.
             const data = graph.x;
             if (!data || data.length === 0) return `No data available for ${label}.`;
