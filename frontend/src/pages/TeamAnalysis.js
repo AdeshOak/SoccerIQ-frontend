@@ -257,8 +257,10 @@ const generateInsight = (data, label) => {
     const minIndex = data.indexOf(minVal);
   
     let insights = [];
-    insights.push("1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.");
-    insights.push("\n2. Lowest: ${label} had the lowest value of ${minVal} at minute ${minIndex}.");
+    insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.`);
+    insights.push('\n')
+    insights.push(`2. Lowest: ${label} had the lowest value of ${minVal} at minute ${minIndex}.`);
+    insights.push('\n')
   
     // For Red Cards, only the first two insights are generated.
     if (label.toLowerCase().includes('red card')) {
@@ -299,14 +301,16 @@ const generateInsight = (data, label) => {
       }
     }
   
-    insights.push("\n3. Time Chunk Analysis:");
+    insights.push("3. Time Chunk Analysis:");
+    insights.push('\n')
     chunks.forEach((chunk, index) => {
       const segment = data.slice(chunk.start, chunk.end + 1);
       const segMax = Math.max(...segment);
       const segMin = Math.min(...segment);
       insights.push(
-        "\n- Chunk ${index + 1} (Minute ${chunk.start} to Minute ${chunk.end}): ${label} ranged between ${segMin} and ${segMax}."
+        `- Chunk ${index + 1} (Minute ${chunk.start} to Minute ${chunk.end}): ${label} ranged between ${segMin} and ${segMax}.`
       );
+      insights.push('\n')
     });
   
     return insights.join('\n');
