@@ -240,26 +240,76 @@ const TeamAnalysis = () =>{
         };
 
 
-        // Helper function to generate a simple trend insight.
-  // You can enhance this logic as needed.
-  const generateInsight = (label, data) => {
-    if (!data || data.length === 0) {
-      return `No data available for ${label}.`;
-    }
-    if (data.length === 1) {
-      return `Only one data point available for ${label}.`;
-    }
-    const start = data[0];
-    const end = data[data.length - 1];
-    const diff = end - start;
-    if (diff > 0) {
-      return `There is an upward trend in ${label}, increasing from ${start} to ${end}.`;
-    } else if (diff < 0) {
-      return `There is a downward trend in ${label}, decreasing from ${start} to ${end}.`;
-    } else {
-      return `The ${label} remain consistent at ${start}.`;
-    }
-  };
+        const generateGraphInsights = (graph, label) => {
+            // Assume graph.x holds the minute-by-minute data values.
+            const data = graph.x;
+            if (!data || data.length === 0) return `No data available for ${label}.`;
+          
+            // Calculate overall max and min values with their corresponding minutes.
+            const maxVal = Math.max(...data);
+            const minVal = Math.min(...data);
+            const maxIndex = data.indexOf(maxVal);
+            const minIndex = data.indexOf(minVal);
+          
+            let insights = [];
+            insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.`);
+            insights.push(`2. Lowest: ${label} had the lowest value of ${minVal} at minute ${minIndex}.`);
+          
+            // For red cards, only generate the first two insights.
+            if (label.toLowerCase().includes('red card')) {
+              return insights.join('\n');
+            }
+          
+            // --- Time Chunk Analysis ---
+            // We assume that each index in the data array corresponds to a minute.
+            // We divide the game (assumed to be 90 minutes) into chunks of 30 minutes each.
+            // If extra minutes after 90 are less than 30, include them in the last chunk.
+            // Otherwise, create an additional segment.
+            const totalMinutes = data.length;
+            let chunks = [];
+          
+            if (totalMinutes <= 30) {
+              // Only one segment available.
+              chunks.push({ start: 0, end: totalMinutes - 1 });
+            } else if (totalMinutes <= 60) {
+              // Two segments: first 30 minutes and the rest.
+              chunks.push({ start: 0, end: 29 });
+              chunks.push({ start: 30, end: totalMinutes - 1 });
+            } else if (totalMinutes <= 90) {
+              // Three segments: 0-29, 30-59, and 60 to end.
+              chunks.push({ start: 0, end: 29 });
+              chunks.push({ start: 30, end: 59 });
+              chunks.push({ start: 60, end: totalMinutes - 1 });
+            } else {
+              // More than 90 minutes.
+              const extra = totalMinutes - 90;
+              if (extra < 30) {
+                // Extra minutes are less than 30: merge with the third chunk.
+                chunks.push({ start: 0, end: 29 });
+                chunks.push({ start: 30, end: 59 });
+                chunks.push({ start: 60, end: totalMinutes - 1 });
+              } else {
+                // Extra minutes form a new segment.
+                chunks.push({ start: 0, end: 29 });
+                chunks.push({ start: 30, end: 59 });
+                chunks.push({ start: 60, end: 89 });
+                chunks.push({ start: 90, end: totalMinutes - 1 });
+              }
+            }
+          
+            insights.push("3. Time Chunk Analysis:");
+            chunks.forEach((chunk, index) => {
+              const segment = data.slice(chunk.start, chunk.end + 1);
+              const segMax = Math.max(...segment);
+              const segMin = Math.min(...segment);
+              insights.push(
+                `- Chunk ${index + 1} (Minute ${chunk.start} to Minute ${chunk.end}): ${label} ranged between ${segMin} and ${segMax}.`
+              );
+            });
+          
+            return insights.join('\n');
+          };
+          
 
   // Compute insights based on the loaded data
   const content1 = !loading && graph1x.length > 0 ? generateInsight("Goals", graph1x) : "";
