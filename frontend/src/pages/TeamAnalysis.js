@@ -241,6 +241,11 @@ const TeamAnalysis = () =>{
 
 
         const generateInsight = (graph, label) => {
+            console.log("Inside generate insights")
+            console.log("Data taken currently:",graph.x)
+            console.log("graph.y:",graph.y)
+
+            console.log("Contents of label variable:",label)
             // Assume graph.x holds the minute-by-minute data values.
             const data = graph.x;
             if (!data || data.length === 0) return `No data available for ${label}.`;
