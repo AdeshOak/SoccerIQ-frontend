@@ -321,46 +321,69 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
 
 
 
-    return(
-        <div>
-
-<div style={{ 
-    backgroundImage: `url(${backgroundImage})`, 
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    position: 'relative',
-    height: '50vh',
-    }}>
-    <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-    }}>
-
-
-            {/*  THIS IS THE TOP SEARCH BOX */}
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' , margin: '5rem',marginLeft:'20rem',borderRadius:10,width:'800px',zIndex:1,backgroundColor: 'white', // add white background
-    boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.2)', // add shadow
-    border: '2px solid black'}}>
-        <h1 style={{marginTop:'1rem',marginLeft:'18rem'}}>Team Analysis</h1>
-        <p style={{marginTop:'1rem',marginLeft:'10rem'}}> Select a team from the drop-down and analyze it's key metrics</p>
+return (
+    <div>
+      <div
+        className="team-analysis-background"
+        style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          position: 'relative',
+          height: '50vh',
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0,0,0,0.5)',
+          }}
+        >
+          {/* THIS IS THE TOP SEARCH BOX */}
+          <Box
+            className="team-search-box"
+            sx={{
+              display: 'flex',
+              gap: 2,
+              flexWrap: 'wrap',
+              margin: '5rem',
+              marginLeft: '20rem',
+              borderRadius: 10,
+              width: '800px',
+              zIndex: 1,
+              backgroundColor: 'white',
+              boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.2)',
+              border: '2px solid black',
+            }}
+          >
+            <h1 style={{ marginTop: '1rem', marginLeft: '18rem' }}>
+              Team Analysis
+            </h1>
+            <p style={{ marginTop: '1rem', marginLeft: '10rem' }}>
+              Select a team from the drop-down and analyze its key metrics
+            </p>
             <Autocomplete
-        placeholder="Choose team"
-        options={teams.map((team) => team.name)}
-        autoHighlight
-        sx={{ width: 300 , margin:4}}
-        onChange={handleTeamSelection}
-    />
-    <Button variant="soft" endDecorator={<KeyboardArrowRight />} color="success"
-    sx={{ width: 300 , margin:4}}
-    onClick={handleClick}>
-        Analyze
-</Button>
-
-{loading && (
+              placeholder="Choose team"
+              options={teams.map((team) => team.name)}
+              autoHighlight
+              sx={{ width: 300, margin: 4 }}
+              onChange={handleTeamSelection}
+            />
+            <Button
+              variant="soft"
+              endDecorator={<KeyboardArrowRight />}
+              color="success"
+              sx={{ width: 300, margin: 4 }}
+              onClick={handleClick}
+            >
+              Analyze
+            </Button>
+  
+            {loading && (
               <div className="loading-overlay">
                 <div className="loading-spinner"></div>
                 <div className="loading-text">
@@ -372,7 +395,7 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
           </Box>
         </div>
       </div>
-
+  
       {/* Render charts only when loading is complete and data is available */}
       {!loading && graph1x.length > 0 && (
         <>
@@ -383,12 +406,18 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
                 color="success"
                 size="medium"
                 startDecorator={<SportsScoreIcon />}
-                sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}
+                sx={{
+                  width: '200px',
+                  borderRadius: '30px',
+                  fontSize: '1.2rem',
+                  padding: '5px',
+                }}
               >
                 Goals
               </Chip>
             </Divider>
             <Box
+              className="chart-container"
               sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -409,7 +438,7 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
               </div>
             </Box>
           </div>
-
+  
           {/* Second Plot - Substitutions */}
           <div style={{ marginTop: '60px' }}>
             <Divider>
@@ -417,12 +446,18 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
                 color="primary"
                 size="medium"
                 startDecorator={<TransformIcon />}
-                sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}
+                sx={{
+                  width: '200px',
+                  borderRadius: '30px',
+                  fontSize: '1.2rem',
+                  padding: '5px',
+                }}
               >
                 Substitutions
               </Chip>
             </Divider>
             <Box
+              className="chart-container"
               sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -443,7 +478,7 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
               />
             </Box>
           </div>
-
+  
           {/* Third Plot - Red Cards */}
           <div style={{ marginTop: '60px' }}>
             <Divider>
@@ -451,12 +486,18 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
                 color="danger"
                 size="medium"
                 startDecorator={<DangerousIcon />}
-                sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}
+                sx={{
+                  width: '200px',
+                  borderRadius: '30px',
+                  fontSize: '1.2rem',
+                  padding: '5px',
+                }}
               >
                 Red Cards
               </Chip>
             </Divider>
             <Box
+              className="chart-container"
               sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -476,7 +517,7 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
               </div>
             </Box>
           </div>
-
+  
           {/* Fourth Plot - Yellow Cards */}
           <div style={{ marginTop: '60px', marginBottom: '35px' }}>
             <Divider>
@@ -484,12 +525,18 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
                 color="warning"
                 size="medium"
                 startDecorator={<WarningAmberIcon />}
-                sx={{ width: '200px', borderRadius: '30px', fontSize: '1.2rem', padding: '5px' }}
+                sx={{
+                  width: '200px',
+                  borderRadius: '30px',
+                  fontSize: '1.2rem',
+                  padding: '5px',
+                }}
               >
                 Yellow Cards
               </Chip>
             </Divider>
             <Box
+              className="chart-container"
               sx={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -514,6 +561,7 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
       )}
     </div>
   );
+  
 };
 
 export default TeamAnalysis;
