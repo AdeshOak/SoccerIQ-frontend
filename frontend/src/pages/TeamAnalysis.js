@@ -258,9 +258,9 @@ const generateInsight = (data, label) => {
   
     let insights = [];
     insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.`);
-    insights.push('\n')
+
     insights.push(`2. Lowest: ${label} had the lowest value of ${minVal} at minute ${minIndex}.`);
-    insights.push('\n')
+
   
     // For Red Cards, only the first two insights are generated.
     if (label.toLowerCase().includes('red card')) {
@@ -302,7 +302,6 @@ const generateInsight = (data, label) => {
     }
   
     insights.push("3. Time Chunk Analysis:");
-    insights.push('\n')
     chunks.forEach((chunk, index) => {
       const segment = data.slice(chunk.start, chunk.end + 1);
       const segMax = Math.max(...segment);
@@ -310,7 +309,6 @@ const generateInsight = (data, label) => {
       insights.push(
         `- Chunk ${index + 1} (Minute ${chunk.start} to Minute ${chunk.end}): ${label} ranged between ${segMin} and ${segMax}.`
       );
-      insights.push('\n')
     });
   
     return insights.join('\n');
@@ -406,7 +404,7 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
                 color={'green'}
                 sx={{ width: '48%' }}
               />
-              <div style={{ width: '48%' }}>
+              <div style={{ width: '48%', whiteSpace: 'pre-wrap' }}>
                 <p>{content1}</p>
               </div>
             </Box>
@@ -433,7 +431,7 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
                 marginTop: '20px',
               }}
             >
-              <div style={{ width: '48%' }}>
+              <div style={{ width: '48%', whiteSpace: 'pre-wrap' }}>
                 <p>{content2}</p>
               </div>
               <LineChart
@@ -473,7 +471,7 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
                 data={graph3x}
                 sx={{ width: '48%' }}
               />
-              <div style={{ width: '48%' }}>
+              <div style={{ width: '48%', whiteSpace: 'pre-wrap' }}>
                 <p>{content3}</p>
               </div>
             </Box>
@@ -500,7 +498,7 @@ const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yell
                 marginTop: '20px',
               }}
             >
-              <div style={{ width: '48%' }}>
+              <div style={{ width: '48%', whiteSpace: 'pre-wrap' }}>
                 <p>{content4}</p>
               </div>
               <LineChart
