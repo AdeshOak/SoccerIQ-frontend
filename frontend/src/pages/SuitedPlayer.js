@@ -25,7 +25,7 @@ import FootballPattern from './football-pattern.svg';
 // Styled Components
 const GlassCard = styled(Sheet)(({ theme }) => ({
   backdropFilter: 'blur(16px)',
-  backgroundColor: alpha(theme.palette.background.paper, 0.8),
+  backgroundColor: `rgba(${theme.vars.palette.background.surfaceChannel} / 0.8)`,
   borderRadius: '24px',
   boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
   border: '1px solid rgba(255, 255, 255, 0.18)',
