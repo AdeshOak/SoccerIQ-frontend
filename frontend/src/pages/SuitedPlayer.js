@@ -1,5 +1,10 @@
-import React,{useState,useRef,useEffect} from "react"
-import { useNavigate,useLocation, useParams } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { motion, AnimatePresence } from "framer-motion";
+import styled from '@emotion/styled';
+import { alpha } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 import Box from '@mui/joy/Box';
 import FormLabel from '@mui/joy/FormLabel';
 import Radio from '@mui/joy/Radio';
@@ -9,185 +14,124 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import Button from '@mui/joy/Button';
 import SearchIcon from '@mui/icons-material/Search';
 import Autocomplete from '@mui/joy/Autocomplete';
-import axios from 'axios'
-import backgroundImage from './feature2-bg.png'
-
-//Typing effect
+import axios from 'axios';
+import backgroundImage from './feature2-bg.png';
 import { useTypingEffect } from "../hooks/typing-effect";
 import BarChart from "../BarChart";
 import GroupedBarChart from "../components/GroubedBarChart";
 import TableData from "../components/Table";
-import { isMuiElement } from "@mui/material";
+import FootballPattern from './football-pattern.svg';
 
+// Styled Components
+const GlassCard = styled(Sheet)(({ theme }) => ({
+  backdropFilter: 'blur(16px)',
+  backgroundColor: alpha(theme.palette.background.paper, 0.8),
+  borderRadius: '24px',
+  boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+  border: '1px solid rgba(255, 255, 255, 0.18)',
+  transition: 'all 0.3s ease-in-out',
+}));
 
+const ResponsiveGrid = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+  gap: theme.spacing(4),
+  padding: theme.spacing(4),
+}));
 
-const SuitedPlayer = () =>{
-    const [team_value, setteam_value] = useState('');
-    const [metric, setmetric] = useState('');
-    const [dataList, setDataList] = useState([]);
-    const [actual, setActual] = useState([]);
-    const [expected, setexpected] = useState([]);
-    const [justify, setJustify] = React.useState('Plot');
-    const [content, setContent] = React.useState('Plot');
-    const [goaldiff,setgoaldiff] = useState([])
-    const [obshots,setobshots] = useState([])
-    const [items, setItems] = useState([]);
-    //club =0 country =1
-    const dynamicData = [
-      {
-        name: 'Player 1',
-        stat1: 100,
-        stat2: 20,
-        stat3: 30,
-        stat4: 10,
-        stat5:57
-      },
-      {
-        name: 'Player 2',
-        stat1: 150,
-        stat2: 15,
-        stat3: 20,
-        stat4: 5,
-        stat5:0
-      },
-    ];
+// Animation Variants
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
 
-    const handleTeamSelection = (event, value) => {
-        setteam_value(value)
-         
+const SuitedPlayer = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [team_value, setteam_value] = useState('');
+  const [metric, setmetric] = useState('');
+  const [dataList, setDataList] = useState([]);
+  const [actual, setActual] = useState([]);
+  const [expected, setexpected] = useState([]);
+  const [justify, setJustify] = useState('Plot');
+  const [content, setContent] = useState('Plot');
+  const [goaldiff, setgoaldiff] = useState([]);
+  const [obshots, setobshots] = useState([]);
+  const [items, setItems] = useState([]);
+  const ref = useRef(null);
+  const text = useTypingEffect('Find Suited Player', 100);
+
+  // Original state and handler functions
+  const handleTeamSelection = (event, value) => {
+    setteam_value(value);
+  };
+
+  const handleMetricSelection = (event, value) => {
+    setmetric(value);
+  };
+
+  const handleButtonClick = async () => {
+    // Original API call logic
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+    try {
+      const response = await axios.post(`${backendUrl}/feature2`, null, {
+        params: { team_name: team_value, sub_feature: metric }
+      });
+      
+      // Process response data
+      const modifiedData = response.data.result.map(item => ({
+        ...item,
+        difference: Math.abs(item.difference?.toFixed(2)),
+        expectedGoals: item.expectedGoals?.toFixed(2)
+      }));
+
+      // Update state based on metric
+      if (metric === 'Most Expected Goals') {
+        setDataList(response.data.result.map(item => item.player));
+        setexpected(response.data.result.map(item => parseInt(item.expectedGoals)));
+        setActual(response.data.result.map(item => item.trueGoals));
+      } else if (metric === 'Best Finisher') {
+        setDataList(response.data.result.map(item => item.player));
+        setgoaldiff(response.data.result.map(item => Math.abs(item.difference)));
+      } else if (metric === 'Outside The Box') {
+        setDataList(response.data.result.map(item => item.player));
+        setobshots(response.data.result.map(item => item.n_outbox_shots));
       }
+      
+      setItems(modifiedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
 
+    ref.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
+  const handleContentRadioChange = (event) => {
+    setJustify(event.target.value);
+    setContent(event.target.value);
+  };
 
-
-      const handleMetricSelection = (event, value) => {
-        setmetric(value)
-        console.log("Metric set to ", metric); // logs the selected value
+  const renderContent = () => {
+    if (content === 'Plot') {
+      if (metric === 'Best Finisher') {
+        return <BarChart labels={dataList} data={goaldiff} ylabel={"Goal Difference"} />;
+      } else if (metric === 'Most Expected Goals') {
+        return <GroupedBarChart labels={dataList} actual={actual} expected={expected} ylabel="No Of Goals" />;
+      } else if (metric === 'Outside The Box') {
+        return <BarChart labels={dataList} data={obshots} ylabel={"Shots Outside The Box"} />;
       }
+    } else if (content === 'Table') {
+      return <TableData data={items} />;
+    }
+    return null;
+  };
 
-
-
-
-      const ref = useRef(null);
-      
-      const handleButtonClick = async() => {
-
-        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-        console.log(backendUrl);
-
-        try {
-          axios.post(`${backendUrl}/feature2`, null, {
-            params: {
-              team_name: team_value,
-              sub_feature: metric
-            }
-          })
-          .then(response => {
-            console.log(response.data);
-            
-            // Handle different metrics
-            if (metric === 'Most Expected Goals') {
-              const names = response.data.result.map(item => item.player);
-              setDataList(names);
-          
-              const exp = response.data.result.map(item => parseInt(item.expectedGoals));
-              setexpected(exp);
-          
-              const act = response.data.result.map(item => item.trueGoals);
-              setActual(act);
-            } else if (metric === 'Best Finisher') {
-              const name = response.data.result.map(item => item.player);
-              setDataList(name);
-          
-              const gd = response.data.result.map(item => Math.abs(item.difference));
-              setgoaldiff(gd);
-            } else {
-              const name = response.data.result.map(item => item.player);
-              setDataList(name);
-          
-              const ob = response.data.result.map(item => item.n_outbox_shots);
-              setobshots(ob);
-            }
-          
-            // Modify the response data for display purposes
-            const modifiedData = response.data.result.map(item => ({
-              ...item,
-              difference: Math.abs(item.difference.toFixed(2)),
-              expectedGoals: item.expectedGoals.toFixed(2)
-            }));
-          
-            // Update the state with the modified response data
-            setItems(modifiedData);
-          })
-          .catch(error => {
-            console.error('Error fetching data:', error);
-            // Handle error state or display an error message to the user
-          });
-        } catch (error) {
-          console.error('Error occurred while making the request:', error);
-          // Handle error state or display an error message to the user
-        }
-
-
-
-        
-        ref.current?.scrollIntoView({behavior: 'smooth'});
-      
-      
-      }
-
-
-      const handleContentRadioChange = (event) => {
-        setJustify(event.target.value);
-        switch (event.target.value) {
-          case 'Plot':
-            setContent('Plot');
-            break;
-          case 'Table':
-            setContent('Table');
-            break;
-          default:
-            setContent('Plot');
-        }
-      };
-      const renderContent = () => {
-        if (content === 'Plot') {
-          if (metric === 'Best Finisher') {
-            return <BarChart labels={dataList} data={goaldiff} ylabel={"Goal Difference"}/>;
-          } else if (metric === 'Most Expected Goals') {
-            return <GroupedBarChart labels={dataList} actual={actual} expected={expected} ylabel="No Of Goals" />;
-          }
-          else if (metric === 'Outside The Box')
-          {
-            return <BarChart labels={dataList} data={obshots} ylabel={"Shots Outside The Box"}/>;
-          }
-          else{
-            return null
-          }
-
-
-
-        }
-         else if (content === 'Table') {
-          return <TableData data={items}/>;
-        }
-        return null;
-      };
-      
-
-
-      useEffect(() => {
-        console.log('----------------------------------')
-
-console.log(items)        
-      }, []);
-
-
-    const metrics = [
-        { name: 'Best Finisher' },
-        { name: 'Most Expected Goals' },
-        { name: 'Outside The Box'},
-    ]
+  // Team and metric options
+  const metrics = [
+    { name: 'Best Finisher' },
+    { name: 'Most Expected Goals' },
+    { name: 'Outside The Box' },
+  ];
 
     const team = [
       { name: 'Hamburg SV' },
@@ -333,117 +277,164 @@ console.log(items)
       { name: 'Leganes' },
       { name: 'RB Leipzig' }
       ];
-    const text = useTypingEffect('Find Suited Player',100)
-    return(
-        <><div style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover',
-        minHeight: '100vh'}}>
-
-        <Box sx={{width:'375px',height:'520px',marginLeft:'60em' ,paddingTop:'10em',border: '2px solid black' , borderRadius:'30px',
-  boxShadow: '0px 3px 3px rgba(0, 0, 0, 0.25)',
-  backgroundColor: '#F9F9F9',position:'absolute', top:'210px'}}>
-            <h1 style={{marginLeft:'35px',marginTop:'-100px'}}>{text}</h1>
-
-
-            <Box sx={{ width: 100,marginLeft:'55px'}}>
-
-
-
-
-     
-
-      <Autocomplete
-        placeholder="Choose team"
-        options={team.map((team) => team.name)}
-        autoHighlight
-        sx={{ width: 235 , marginTop:'60px',height:30}}
-        onChange={handleTeamSelection}
-    />
-   
-      <Autocomplete
-        placeholder="Desired Metric..."
-        options={metrics.map((metric) => metric.name)}
-        autoHighlight
-        sx={{ width: 235 , marginTop:'60px',height:30}}
-        onChange={handleMetricSelection}
-    />
-
-
-    <Button startDecorator={<SearchIcon />} sx={{marginTop:'60px',marginLeft:'70px',marginBottom:'30px'}} onClick={handleButtonClick}>
-      Search
-      </Button>
-      </Box>
-      </Box>
-      
-
-        </div>
-
-
-        <div style={{height:'150vh',width:'100%',backgroundImage: 'linear-gradient(to bottom, #ffffff, #f0f0f0)' }} ref={ref} className='content'>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <RadioGroup
-        orientation="horizontal"
-        aria-labelledby="segmented-controls-example"
-        name="justify"
-        value={justify}
-        onChange={handleContentRadioChange}
-        sx={{
-          minHeight: 48,
-          padding: '4px',
-          borderRadius: 'md',
-          alignContent:'center',
-          marginTop:'4em',
-          marginLeft:'35em',
-          bgcolor: 'neutral.softBg',
-          '--RadioGroup-gap': '4px',
-          '--Radio-actionRadius': '8px',
-        }}
-      >
-        {['Plot', 'Table'].map((item) => (
-          <Radio
-            key={item}
-            color="neutral"
-            value={item}
-            disableIcon
-            label={item}
-            variant="plain"
-            sx={{
-              px: 2,
-              width:'200px',
-              textAlign:'center',
-              alignItems:'center'
+      return (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          style={{ 
+            background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+            minHeight: '100vh',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Animated Background Pattern */}
+          <motion.div 
+            style={{
+              position: 'absolute',
+              top: -100,
+              left: -100,
+              width: '50%',
+              height: '50%',
+              background: `url(${FootballPattern})`,
+              opacity: 0.1,
             }}
-            slotProps={{
-              action: ({ checked }) => ({
-                sx: {
-                  ...(checked && {
-                    bgcolor: 'background.surface',
-                    boxShadow: 'md',
-                    '&:hover': {
-                      bgcolor: 'background.surface',
-                    },
-                  }),
-                },
-              }),
-            }}
+            animate={{ rotate: 360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
           />
-        ))}
-      </RadioGroup>
-            </Box>
-            <Box
-  sx={{
-    width: '900px',
-    height: content === 'Plot' ? '500px' : 'auto',
-    marginTop: '4em',
-    marginLeft: '22em',
-    border: '1px black solid',
-  }}
->                <div style={{padding:'20px'}}>
-                {renderContent()}
-            </div>
-            </Box>
-      </div>
-        </>
-    )
-}
-
-export default SuitedPlayer;
+    
+          <ResponsiveGrid>
+            {/* Search Card */}
+            <motion.div
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.5 }}
+            >
+              <GlassCard
+                sx={{
+                  p: 4,
+                  position: isMobile ? 'static' : 'absolute',
+                  top: isMobile ? 'auto' : '50%',
+                  transform: isMobile ? 'none' : 'translateY(-50%)',
+                  right: isMobile ? 'auto' : theme.spacing(4),
+                  width: isMobile ? '100%' : 375,
+                }}
+              >
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <h1 style={{ 
+                    fontSize: isMobile ? '1.5rem' : '2rem',
+                    color: theme.palette.text.primary,
+                    marginBottom: theme.spacing(4),
+                    textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                  }}>
+                    {text}
+                  </h1>
+    
+                  <Autocomplete
+                    placeholder="Choose team"
+                    options={team.map((team) => team.name)}
+                    onChange={handleTeamSelection}
+                    sx={{ width: '100%', mb: 3 }}
+                  />
+    
+                  <Autocomplete
+                    placeholder="Desired Metric..."
+                    options={metrics.map((metric) => metric.name)}
+                    onChange={handleMetricSelection}
+                    sx={{ width: '100%', mb: 3 }}
+                  />
+    
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      fullWidth
+                      startDecorator={<SearchIcon />}
+                      variant="gradient"
+                      size="lg"
+                      onClick={handleButtonClick}
+                      sx={{
+                        background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+                        fontWeight: 'bold',
+                        letterSpacing: 1.1,
+                      }}
+                    >
+                      Search Players
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              </GlassCard>
+            </motion.div>
+    
+            {/* Results Section */}
+            <motion.div
+              variants={cardVariants}
+              style={{ marginTop: isMobile ? theme.spacing(4) : 0 }}
+              ref={ref}
+            >
+              <GlassCard sx={{ p: 4, mt: isMobile ? 4 : 0 }}>
+                <Box sx={{ 
+                  width: '100%', 
+                  maxWidth: 1200,
+                  mx: 'auto',
+                  overflowX: 'auto'
+                }}>
+                  <RadioGroup
+                    value={justify}
+                    onChange={handleContentRadioChange}
+                    sx={{
+                      flexDirection: isMobile ? 'column' : 'row',
+                      gap: 2,
+                      mb: 4,
+                      '& .MuiRadio-root': {
+                        flex: 1,
+                        py: 2,
+                        borderRadius: '8px',
+                        transition: 'all 0.3s ease',
+                        '&.Mui-checked': {
+                          bgcolor: alpha(theme.palette.primary.main, 0.1),
+                          borderColor: theme.palette.primary.main,
+                        }
+                      }
+                    }}
+                  >
+                    {['Plot', 'Table'].map((item) => (
+                      <Radio
+                        key={item}
+                        color="neutral"
+                        value={item}
+                        disableIcon
+                        label={item}
+                        variant="plain"
+                        sx={{ px: 2, width: '200px', textAlign: 'center' }}
+                      />
+                    ))}
+                  </RadioGroup>
+    
+                  <AnimatePresence mode='wait'>
+                    <motion.div
+                      key={content}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {renderContent()}
+                    </motion.div>
+                  </AnimatePresence>
+                </Box>
+              </GlassCard>
+            </motion.div>
+          </ResponsiveGrid>
+        </motion.div>
+      );
+    };
+    
+    export default SuitedPlayer;
