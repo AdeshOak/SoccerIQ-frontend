@@ -1,10 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
-import { motion, AnimatePresence } from "framer-motion";
-import styled from '@emotion/styled';
-import { alpha } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/joy/Box';
 import FormLabel from '@mui/joy/FormLabel';
 import Radio from '@mui/joy/Radio';
@@ -20,34 +15,9 @@ import { useTypingEffect } from "../hooks/typing-effect";
 import BarChart from "../BarChart";
 import GroupedBarChart from "../components/GroubedBarChart";
 import TableData from "../components/Table";
-import FootballPattern from './football-pattern.svg';
-
-// Styled Components
-const GlassCard = styled(Sheet)(({ theme }) => ({
-  backdropFilter: 'blur(16px)',
-  backgroundColor: `rgba(${theme.vars.palette.background.surfaceChannel} / 0.8)`,
-  borderRadius: '24px',
-  boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-  border: '1px solid rgba(255, 255, 255, 0.18)',
-  transition: 'all 0.3s ease-in-out',
-}));
-
-const ResponsiveGrid = styled(Box)(({ theme }) => ({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-  // Use fixed spacing values instead of theme.spacing()
-  gap: '32px',  // equivalent to theme.spacing(4)
-  padding: '32px',  // equivalent to theme.spacing(4)
-}));
-// Animation Variants
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
+import { motion } from "framer-motion"; // added for animations
 
 const SuitedPlayer = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [team_value, setteam_value] = useState('');
   const [metric, setmetric] = useState('');
   const [dataList, setDataList] = useState([]);
@@ -58,51 +28,80 @@ const SuitedPlayer = () => {
   const [goaldiff, setgoaldiff] = useState([]);
   const [obshots, setobshots] = useState([]);
   const [items, setItems] = useState([]);
-  const ref = useRef(null);
-  const text = useTypingEffect('Find Suited Player', 100);
 
-  // Original state and handler functions
+  const dynamicData = [
+    {
+      name: 'Player 1',
+      stat1: 100,
+      stat2: 20,
+      stat3: 30,
+      stat4: 10,
+      stat5: 57
+    },
+    {
+      name: 'Player 2',
+      stat1: 150,
+      stat2: 15,
+      stat3: 20,
+      stat4: 5,
+      stat5: 0
+    },
+  ];
+
+  const ref = useRef(null);
+  
   const handleTeamSelection = (event, value) => {
     setteam_value(value);
   };
 
   const handleMetricSelection = (event, value) => {
     setmetric(value);
+    console.log("Metric set to ", value);
   };
 
   const handleButtonClick = async () => {
-    // Original API call logic
     const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+    console.log(backendUrl);
     try {
-      const response = await axios.post(`${backendUrl}/feature2`, null, {
-        params: { team_name: team_value, sub_feature: metric }
+      axios.post(`${backendUrl}/feature2`, null, {
+        params: {
+          team_name: team_value,
+          sub_feature: metric
+        }
+      })
+      .then(response => {
+        console.log(response.data);
+        if (metric === 'Most Expected Goals') {
+          const names = response.data.result.map(item => item.player);
+          setDataList(names);
+          const exp = response.data.result.map(item => parseInt(item.expectedGoals));
+          setexpected(exp);
+          const act = response.data.result.map(item => item.trueGoals);
+          setActual(act);
+        } else if (metric === 'Best Finisher') {
+          const name = response.data.result.map(item => item.player);
+          setDataList(name);
+          const gd = response.data.result.map(item => Math.abs(item.difference));
+          setgoaldiff(gd);
+        } else {
+          const name = response.data.result.map(item => item.player);
+          setDataList(name);
+          const ob = response.data.result.map(item => item.n_outbox_shots);
+          setobshots(ob);
+        }
+        const modifiedData = response.data.result.map(item => ({
+          ...item,
+          difference: Math.abs(item.difference.toFixed(2)),
+          expectedGoals: item.expectedGoals.toFixed(2)
+        }));
+        setItems(modifiedData);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
       });
-      
-      // Process response data
-      const modifiedData = response.data.result.map(item => ({
-        ...item,
-        difference: Math.abs(item.difference?.toFixed(2)),
-        expectedGoals: item.expectedGoals?.toFixed(2)
-      }));
-
-      // Update state based on metric
-      if (metric === 'Most Expected Goals') {
-        setDataList(response.data.result.map(item => item.player));
-        setexpected(response.data.result.map(item => parseInt(item.expectedGoals)));
-        setActual(response.data.result.map(item => item.trueGoals));
-      } else if (metric === 'Best Finisher') {
-        setDataList(response.data.result.map(item => item.player));
-        setgoaldiff(response.data.result.map(item => Math.abs(item.difference)));
-      } else if (metric === 'Outside The Box') {
-        setDataList(response.data.result.map(item => item.player));
-        setobshots(response.data.result.map(item => item.n_outbox_shots));
-      }
-      
-      setItems(modifiedData);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error occurred while making the request:', error);
     }
-
     ref.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -114,11 +113,13 @@ const SuitedPlayer = () => {
   const renderContent = () => {
     if (content === 'Plot') {
       if (metric === 'Best Finisher') {
-        return <BarChart labels={dataList} data={goaldiff} ylabel={"Goal Difference"} />;
+        return <BarChart labels={dataList} data={goaldiff} ylabel="Goal Difference" />;
       } else if (metric === 'Most Expected Goals') {
         return <GroupedBarChart labels={dataList} actual={actual} expected={expected} ylabel="No Of Goals" />;
       } else if (metric === 'Outside The Box') {
-        return <BarChart labels={dataList} data={obshots} ylabel={"Shots Outside The Box"} />;
+        return <BarChart labels={dataList} data={obshots} ylabel="Shots Outside The Box" />;
+      } else {
+        return null;
       }
     } else if (content === 'Table') {
       return <TableData data={items} />;
@@ -126,7 +127,10 @@ const SuitedPlayer = () => {
     return null;
   };
 
-  // Team and metric options
+  useEffect(() => {
+    console.log('Items updated:', items);
+  }, [items]);
+
   const metrics = [
     { name: 'Best Finisher' },
     { name: 'Most Expected Goals' },
@@ -277,164 +281,160 @@ const SuitedPlayer = () => {
       { name: 'Leganes' },
       { name: 'RB Leipzig' }
       ];
-      return (
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          style={{ 
-            background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-            minHeight: '100vh',
-            position: 'relative',
-            overflow: 'hidden',
+
+      const text = useTypingEffect('Find Suited Player', 100);
+
+  return (
+    <>
+      {/* Background section with overlay */}
+      <Box
+        sx={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          minHeight: '100vh',
+          position: 'relative'
+        }}
+      >
+        {/* Overlay to darken background for better contrast */}
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(0, 0, 0, 0.4)'
           }}
+        />
+        {/* Animated card container */}
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          style={{ position: 'relative', zIndex: 2 }}
         >
-          {/* Animated Background Pattern */}
-          <motion.div 
-            style={{
-              position: 'absolute',
-              top: -100,
-              left: -100,
-              width: '50%',
-              height: '50%',
-              background: `url(${FootballPattern})`,
-              opacity: 0.1,
+          <Box
+            sx={{
+              width: { xs: '90%', sm: '375px' },
+              mx: { xs: 'auto', sm: 'auto' },
+              my: { xs: 4, sm: 8 },
+              p: 4,
+              border: '2px solid #fff',
+              borderRadius: '30px',
+              boxShadow: '0px 3px 3px rgba(0, 0, 0, 0.25)',
+              backgroundColor: 'rgba(249,249,249,0.9)',
+              position: 'relative'
             }}
-            animate={{ rotate: 360 }}
-            transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-          />
-    
-          <ResponsiveGrid>
-            {/* Search Card */}
-            <motion.div
-              variants={cardVariants}
-              initial="hidden"
-              animate="visible"
-              transition={{ duration: 0.5 }}
-            >
-              <GlassCard
+          >
+            <h1 style={{ textAlign: 'center', color: '#333' }}>{text}</h1>
+            <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Autocomplete
+                placeholder="Choose team"
+                options={team.map(team => team.name)}
+                autoHighlight
                 sx={{
-                  p: 4,
-                  position: isMobile ? 'static' : 'absolute',
-                  top: isMobile ? 'auto' : '50%',
-                  transform: isMobile ? 'none' : 'translateY(-50%)',
-                  right: isMobile ? 'auto' : theme.spacing(4),
-                  width: isMobile ? '100%' : 375,
+                  width: '100%',
+                  height: 40,
+                  '& .MuiInputBase-root': { backgroundColor: '#fff' }
                 }}
+                onChange={handleTeamSelection}
+              />
+              <Autocomplete
+                placeholder="Desired Metric..."
+                options={metrics.map(metric => metric.name)}
+                autoHighlight
+                sx={{
+                  width: '100%',
+                  height: 40,
+                  '& .MuiInputBase-root': { backgroundColor: '#fff' }
+                }}
+                onChange={handleMetricSelection}
+              />
+              <Button
+                startDecorator={<SearchIcon />}
+                sx={{ mt: 2 }}
+                onClick={handleButtonClick}
+                variant="solid"
+                color="primary"
               >
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <h1 style={{ 
-                    fontSize: isMobile ? '1.5rem' : '2rem',
-                    color: theme.palette.text.primary,
-                    marginBottom: theme.spacing(4),
-                    textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                  }}>
-                    {text}
-                  </h1>
-    
-                  <Autocomplete
-                    placeholder="Choose team"
-                    options={team.map((team) => team.name)}
-                    onChange={handleTeamSelection}
-                    sx={{ width: '100%', mb: 3 }}
-                  />
-    
-                  <Autocomplete
-                    placeholder="Desired Metric..."
-                    options={metrics.map((metric) => metric.name)}
-                    onChange={handleMetricSelection}
-                    sx={{ width: '100%', mb: 3 }}
-                  />
-    
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button
-                      fullWidth
-                      startDecorator={<SearchIcon />}
-                      variant="gradient"
-                      size="lg"
-                      onClick={handleButtonClick}
-                      sx={{
-                        background: `linear-gradient(45deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
-                        fontWeight: 'bold',
-                        letterSpacing: 1.1,
-                      }}
-                    >
-                      Search Players
-                    </Button>
-                  </motion.div>
-                </motion.div>
-              </GlassCard>
-            </motion.div>
-    
-            {/* Results Section */}
-            <motion.div
-              variants={cardVariants}
-              style={{ marginTop: isMobile ? theme.spacing(4) : 0 }}
-              ref={ref}
-            >
-              <GlassCard sx={{ p: 4, mt: isMobile ? 4 : 0 }}>
-                <Box sx={{ 
-                  width: '100%', 
-                  maxWidth: 1200,
-                  mx: 'auto',
-                  overflowX: 'auto'
-                }}>
-                  <RadioGroup
-                    value={justify}
-                    onChange={handleContentRadioChange}
-                    sx={{
-                      flexDirection: isMobile ? 'column' : 'row',
-                      gap: 2,
-                      mb: 4,
-                      '& .MuiRadio-root': {
-                        flex: 1,
-                        py: 2,
-                        borderRadius: '8px',
-                        transition: 'all 0.3s ease',
-                        '&.Mui-checked': {
-                          bgcolor: alpha(theme.palette.primary.main, 0.1),
-                          borderColor: theme.palette.primary.main,
-                        }
-                      }
-                    }}
-                  >
-                    {['Plot', 'Table'].map((item) => (
-                      <Radio
-                        key={item}
-                        color="neutral"
-                        value={item}
-                        disableIcon
-                        label={item}
-                        variant="plain"
-                        sx={{ px: 2, width: '200px', textAlign: 'center' }}
-                      />
-                    ))}
-                  </RadioGroup>
-    
-                  <AnimatePresence mode='wait'>
-                    <motion.div
-                      key={content}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {renderContent()}
-                    </motion.div>
-                  </AnimatePresence>
-                </Box>
-              </GlassCard>
-            </motion.div>
-          </ResponsiveGrid>
+                Search
+              </Button>
+            </Box>
+          </Box>
         </motion.div>
-      );
-    };
-    
-    export default SuitedPlayer;
+      </Box>
+
+      {/* Content section with responsive layout */}
+      <Box
+        ref={ref}
+        sx={{
+          minHeight: '100vh',
+          py: 4,
+          px: { xs: 2, sm: 4, md: 8 },
+          backgroundImage: 'linear-gradient(to bottom, #ffffff, #f0f0f0)'
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 4 }}>
+          <RadioGroup
+            orientation="horizontal"
+            name="justify"
+            value={justify}
+            onChange={handleContentRadioChange}
+            sx={{
+              p: 1,
+              borderRadius: 2,
+              bgcolor: 'neutral.softBg',
+              gap: 1,
+              '& .MuiRadio-root': { flex: 1 },
+            }}
+          >
+            {['Plot', 'Table'].map(item => (
+              <Radio
+                key={item}
+                color="neutral"
+                value={item}
+                disableIcon
+                label={item}
+                variant="plain"
+                sx={{
+                  px: 2,
+                  flex: 1,
+                  textAlign: 'center'
+                }}
+                slotProps={{
+                  action: ({ checked }) => ({
+                    sx: {
+                      ...(checked && {
+                        bgcolor: 'background.surface',
+                        boxShadow: 'md',
+                        '&:hover': { bgcolor: 'background.surface' }
+                      })
+                    }
+                  })
+                }}
+              />
+            ))}
+          </RadioGroup>
+        </Box>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <Box
+            sx={{
+              width: { xs: '100%', md: '900px' },
+              mx: 'auto',
+              p: 2,
+              border: '1px solid #ccc',
+              borderRadius: 2,
+              backgroundColor: '#fff'
+            }}
+          >
+            {renderContent()}
+          </Box>
+        </motion.div>
+      </Box>
+    </>
+  );
+};
+
+export default SuitedPlayer;
