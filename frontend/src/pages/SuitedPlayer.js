@@ -35,10 +35,10 @@ const GlassCard = styled(Sheet)(({ theme }) => ({
 const ResponsiveGrid = styled(Box)(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-  gap: theme.spacing(4),
-  padding: theme.spacing(4),
+  // Use fixed spacing values instead of theme.spacing()
+  gap: '32px',  // equivalent to theme.spacing(4)
+  padding: '32px',  // equivalent to theme.spacing(4)
 }));
-
 // Animation Variants
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
