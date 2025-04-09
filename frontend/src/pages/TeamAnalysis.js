@@ -102,11 +102,11 @@ const LoadingOverlay = styled('div')({
 });
 
 const StyledButton = styled(Button)({
-  backgroundColor: '#1E88E5',
+  backgroundColor: '#4FC3F7', // Match the blue from the Player search page
   borderRadius: '8px',
   padding: '10px 24px',
   '&:hover': {
-    backgroundColor: '#1565C0',
+    backgroundColor: '#3DB1E8', // Slightly darker on hover
   },
 });
 
@@ -281,7 +281,10 @@ const TeamAnalysis = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
     
     try {
-      const response = await axios.post(`${backendUrl}/feature1`, data);
+      const response = await axios.post(`${backendUrl}/feature1`, data, {
+        timeout: 60000 // Set a longer timeout (60 seconds)
+      });
+      
       setGraph1x(response.data.graph1.data);
       setGraph1y(response.data.graph1.labels);
       setGraph2x(response.data.graph2.data);
@@ -293,6 +296,7 @@ const TeamAnalysis = () => {
       setDisplayData(true);
     } catch (error) {
       console.error("Error fetching data from backend:", error);
+      alert("There was an error processing your request. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -371,12 +375,28 @@ const TeamAnalysis = () => {
       <HeroSection>
         <SearchContainer>
           <CardContent sx={{ p: 4 }}>
-            <Typography variant="h3" component="h1" align="center" gutterBottom sx={{ fontWeight: 700 }}>
+            <Typography 
+              variant="h3" 
+              component="h1" 
+              align="center" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 700,
+                color: '#4FC3F7' // Light blue color to match the Player page
+              }}
+            >
               Team Analysis
             </Typography>
-            <Typography variant="body1" align="center" sx={{ opacity: 0.7, mb: 4 }}>
-              Select a team from the drop-down and analyze its key metrics
-            </Typography>
+            <Typography 
+            variant="body1" 
+            align="center" 
+            sx={{ 
+              color: '#FFFFFF', // Full white instead of opacity 0.7
+              mb: 4 
+            }}
+          >
+            Select a team from the drop-down and analyze its key metrics
+          </Typography>
             
             <Grid container spacing={2} alignItems="center">
               <Grid item xs={12} md={8}>
@@ -428,24 +448,24 @@ const TeamAnalysis = () => {
 
       {/* Loading Overlay */}
       {loading && (
-        <LoadingOverlay>
-          <div className="loading-spinner" style={{ 
-            border: '8px solid rgba(255, 255, 255, 0.3)',
-            borderTop: '8px solid #fff',
-            borderRadius: '50%',
-            width: '80px',
-            height: '80px',
-            animation: 'spin 1.5s linear infinite',
-            marginBottom: '20px'
-          }} />
-          <Typography variant="h6" sx={{ color: 'white', mb: 1 }}>
-            The model is working hard to crunch numbers for you.
-          </Typography>
-          <Typography variant="body1" sx={{ color: 'white', opacity: 0.7 }}>
-            Hang tight to see the visualizations...
-          </Typography>
-        </LoadingOverlay>
-      )}
+  <LoadingOverlay>
+    <div className="loading-spinner" style={{ 
+      border: '8px solid rgba(255, 255, 255, 0.3)',
+      borderTop: '8px solid #4FC3F7', // Use the same blue color
+      borderRadius: '50%',
+      width: '80px',
+      height: '80px',
+      animation: 'spin 1.5s linear infinite', // Ensure this matches your CSS
+      marginBottom: '20px'
+    }} />
+    <Typography variant="h6" sx={{ color: 'white', mb: 1 }}>
+      The model is working hard to crunch numbers for you.
+    </Typography>
+    <Typography variant="body1" sx={{ color: 'white' }}>
+      Hang tight to see the visualizations...
+    </Typography>
+  </LoadingOverlay>
+)}
 
       {/* Charts Section */}
       {displayData && !loading && graph1x.length > 0 && (
