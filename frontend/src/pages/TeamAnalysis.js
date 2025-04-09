@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import LineChart from "../LineChart";
+import './TeamAnalysis.css'; 
 
 // Icons
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
@@ -449,15 +450,16 @@ const TeamAnalysis = () => {
       {/* Loading Overlay */}
       {loading && (
   <LoadingOverlay>
-    <div className="loading-spinner" style={{ 
-      border: '8px solid rgba(255, 255, 255, 0.3)',
-      borderTop: '8px solid #4FC3F7', // Use the same blue color
-      borderRadius: '50%',
-      width: '80px',
-      height: '80px',
-      animation: 'spin 1.5s linear infinite', // Ensure this matches your CSS
-      marginBottom: '20px'
-    }} />
+  <div style={{ 
+    border: '8px solid rgba(255, 255, 255, 0.3)',
+    borderTop: '8px solid #4FC3F7',
+    borderRadius: '50%',
+    width: '80px',
+    height: '80px',
+    animation: 'spin 1.5s linear infinite',
+    WebkitAnimation: 'spin 1.5s linear infinite', // Add webkit prefix
+    marginBottom: '20px'
+  }} />
     <Typography variant="h6" sx={{ color: 'white', mb: 1 }}>
       The model is working hard to crunch numbers for you.
     </Typography>
