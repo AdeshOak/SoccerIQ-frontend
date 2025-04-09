@@ -88,14 +88,6 @@ const Scout = () => {
 
       {/* Content Container */}
       <div className="relative z-10 container mx-auto p-4">
-        {/* Header with Logo */}
-        <div className="flex justify-between items-center mb-8 mt-4">
-          <div className="text-white font-bold text-2xl">SCOUT+</div>
-          <div className="flex space-x-4">
-            <button className="text-white">Home</button>
-            <button className="text-white font-bold">Explore Features</button>
-          </div>
-        </div>
 
         {/* Main Content */}
         <div className="flex flex-col items-center justify-center mt-8">
