@@ -58,7 +58,7 @@ const Scout = () => {
     try {
       const response = await axios.post(`${backendUrl}/feature4`, null, {
         params: {
-          'intial_overall': value
+          'initial_overall': value
         }
       });
     
