@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Scout = () => {
   const [value, setValue] = useState(80);
@@ -24,7 +25,6 @@ const Scout = () => {
       
       console.log('Scouting results:', response.data);
       setPlayers(response.data.result);
-      console.log(players);
       setShowResults(true);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -75,10 +75,8 @@ const Scout = () => {
 
     return positionColors[position] || '#577590'; // Default blue if position not found
   };
-  console.log(players);
 
   return (
-    
     <div className="relative w-full min-h-screen">
       {/* Stadium Background */}
       <div 
@@ -120,7 +118,7 @@ const Scout = () => {
                   <span>Scouting...</span>
                 ) : (
                   <>
-                    Scout <span className="ml-2">🔍</span>
+                    Scout <Search className="ml-2" size={20} />
                   </>
                 )}
               </button>
@@ -139,14 +137,14 @@ const Scout = () => {
                   onClick={() => handleSlideChange('prev')}
                   className="absolute left-0 top-1/2 transform -translate-y-1/2 z-20 bg-red-600 text-white p-2 rounded-full shadow-lg"
                 >
-                  &lt;
+                  <ChevronLeft size={24} />
                 </button>
                 
                 <button 
                   onClick={() => handleSlideChange('next')}
                   className="absolute right-0 top-1/2 transform -translate-y-1/2 z-20 bg-red-600 text-white p-2 rounded-full shadow-lg"
                 >
-                  &gt;
+                  <ChevronRight size={24} />
                 </button>
                 
                 {/* Stadium illustration background */}
@@ -174,25 +172,25 @@ const Scout = () => {
                           <div className="w-40 h-40 bg-black rounded-t-xl overflow-hidden">
                             <img 
                               src={player.photo || `/placeholder-player.png`} 
-                              alt={player.name || "Player"}
+                              alt={player.name}
                               className="w-full h-full object-cover"
                             />
                           </div>
                           
                           {/* Player Info Card */}
                           <div className="w-40 bg-white rounded-b-xl p-3 shadow-lg">
-                            <h4 className="font-bold text-lg">{player.name || "Unknown Player"}</h4>
-                            <div className="text-sm mb-1">Club: <span className="font-medium">{player.club || "N/A"}</span></div>
-                            <div className="text-sm mb-1">Age: <span className="font-medium">{player.age || "N/A"}</span></div>
+                            <h4 className="font-bold text-lg">{player.name}</h4>
+                            <div className="text-sm mb-1">Club: <span className="font-medium">{player.club}</span></div>
+                            <div className="text-sm mb-1">Age: <span className="font-medium">{player.age}</span></div>
                             
                             <div className="flex justify-between text-sm mb-1">
                               <span>Overall:</span> 
-                              <span className="font-medium text-green-600">{player.overall || "N/A"}</span>
+                              <span className="font-medium text-green-600">{player.overall}</span>
                             </div>
                             
                             <div className="flex justify-between text-sm mb-1">
                               <span>Potential:</span>
-                              <span className="font-medium text-blue-600">{player.potential || "N/A"}</span>
+                              <span className="font-medium text-blue-600">{player.potential}</span>
                             </div>
                             
                             <div className="flex justify-between text-sm">
@@ -201,7 +199,7 @@ const Scout = () => {
                                 className="font-medium px-2 rounded-sm text-white"
                                 style={{ backgroundColor: getPositionColor(player.position) }}
                               >
-                                {player.position || "N/A"}
+                                {player.position}
                               </span>
                             </div>
                           </div>
