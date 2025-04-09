@@ -82,7 +82,7 @@ const Scout = () => {
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{ 
-          backgroundImage: "url('/stadium-background.jpg')", // You'll need to add this image to public folder
+          backgroundImage: "url('/stadium-background.jpeg')", // You'll need to add this image to public folder
           filter: "brightness(0.7)"
         }}
       />
@@ -151,7 +151,7 @@ const Scout = () => {
                 <div className="relative w-full h-96 bg-gray-300 rounded-xl overflow-hidden">
                   <div className="absolute inset-0 bg-center bg-contain"
                        style={{ 
-                         backgroundImage: "url('/stadium-illustration.svg')", 
+                         backgroundImage: "url('/stadium-background.jpeg')", 
                          opacity: 0.2 
                        }} 
                   />
@@ -171,26 +171,26 @@ const Scout = () => {
                           {/* Player Photo */}
                           <div className="w-40 h-40 bg-black rounded-t-xl overflow-hidden">
                             <img 
-                              src={player.photo || `/placeholder-player.png`} 
-                              alt={player.name}
+                              src={player.Faceurl || `/placeholder-player.png`} 
+                              alt={player.Name}
                               className="w-full h-full object-cover"
                             />
                           </div>
                           
                           {/* Player Info Card */}
                           <div className="w-40 bg-white rounded-b-xl p-3 shadow-lg">
-                            <h4 className="font-bold text-lg">{player.name}</h4>
-                            <div className="text-sm mb-1">Club: <span className="font-medium">{player.club}</span></div>
-                            <div className="text-sm mb-1">Age: <span className="font-medium">{player.age}</span></div>
+                            <h4 className="font-bold text-lg">{player.Name}</h4>
+                            <div className="text-sm mb-1">Club: <span className="font-medium">{player.club_name}</span></div>
+                            <div className="text-sm mb-1">Age: <span className="font-medium">{player.Age}</span></div>
                             
                             <div className="flex justify-between text-sm mb-1">
                               <span>Overall:</span> 
-                              <span className="font-medium text-green-600">{player.overall}</span>
+                              <span className="font-medium text-green-600">{player.Overall}</span>
                             </div>
                             
                             <div className="flex justify-between text-sm mb-1">
                               <span>Potential:</span>
-                              <span className="font-medium text-blue-600">{player.potential}</span>
+                              <span className="font-medium text-blue-600">{player.Potential}</span>
                             </div>
                             
                             <div className="flex justify-between text-sm">
