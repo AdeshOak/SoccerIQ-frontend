@@ -75,8 +75,10 @@ const Scout = () => {
 
     return positionColors[position] || '#577590'; // Default blue if position not found
   };
+  console.log(players);
 
   return (
+    
     <div className="relative w-full min-h-screen">
       {/* Stadium Background */}
       <div 
