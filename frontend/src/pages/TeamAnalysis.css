@@ -1,124 +1,97 @@
-/* Overlay styling to cover the entire screen */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent dark background */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Ensure it's above all content */
-    flex-direction: column; /* Align text vertically */
-  }
-  
-  /* Spinner styling */
-  .loading-spinner {
-    border: 8px solid rgba(255, 255, 255, 0.3); /* Semi-transparent border */
-    border-top: 8px solid #fff; /* White spinner */
-    border-radius: 50%;
-    width: 80px; /* Larger spinner size */
-    height: 80px; /* Larger spinner size */
-    animation: spin 1.5s linear infinite; /* Animation for rotation */
-    margin-bottom: 20px; /* Space between spinner and text */
-  }
-  
-  /* Keyframe for spinner animation */
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  /* Text styling */
-  .loading-text {
-    font-size: 20px; /* Larger text */
-    font-weight: bold; /* Bold text */
-    color: white;
-    text-align: center;
-  }
-  
-
-  /* Responsive Background Height */
-.team-analysis-background {
-  height: 50vh;
+/* Keyframe for spinner animation - reused from original */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-@media (max-width: 1024px) {
-  /* Adjust background height */
-  .team-analysis-background {
-    height: 40vh;
-  }
+/* Global styles for this component */
+body {
+  margin: 0;
+  padding: 0;
+}
 
-  /* Adjust search box container */
-  .team-search-box {
-    margin: 2rem auto !important;
-    width: 90% !important;
-    margin-left: auto !important;
-    flex-direction: column !important;
-    align-items: center;
-  }
+/* Chart container animations */
+.metric-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-  .team-search-box h1,
-  .team-search-box p {
-    margin-left: 0 !important;
-    text-align: center;
-  }
+.metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
 
-  /* Ensure Autocomplete and Button fill the width on medium screens */
-  .team-search-box .MuiAutocomplete-root,
-  .team-search-box .MuiButton-root {
-    width: 100% !important;
-    margin: 1rem 0 !important;
-  }
+/* Custom scrollbar for the insights */
+.insight-container::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
 
-  /* Adjust chart container layout */
+.insight-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.insight-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.insight-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive media queries */
+@media (max-width: 1200px) {
   .chart-container {
-    flex-direction: column !important;
-    gap: 1rem !important;
+    height: 250px;
   }
+}
 
-  .chart-container > * {
-    width: 100% !important;
+@media (max-width: 900px) {
+  .chart-container {
+    height: 220px;
   }
 }
 
 @media (max-width: 600px) {
-  /* Further adjustments for mobile devices */
-  .team-analysis-background {
-    height: 30vh;
-  }
-
-  .team-search-box {
-    margin: 1rem auto !important;
-    width: 95% !important;
-  }
-
-  .team-search-box h1 {
-    font-size: 1.5rem !important;
-  }
-
-  .team-search-box p {
-    font-size: 1rem !important;
-  }
-
-  /* You may want to adjust padding/margins in the chart sections */
   .chart-container {
-    gap: 0.5rem !important;
+    height: 200px;
+  }
+
+  .hero-section {
+    height: 40vh !important;
+    min-height: 300px;
   }
 }
 
-/* Loading overlay remains the same (if desired) */
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  flex-direction: column;
+/* Fade-in animation for metrics when they appear */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.6s ease forwards;
+}
+
+.fade-in-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.fade-in-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.fade-in-delay-3 {
+  animation-delay: 0.3s;
+}
+
+.fade-in-delay-4 {
+  animation-delay: 0.4s;
 }

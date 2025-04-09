@@ -1,256 +1,309 @@
-import React,{useRef,useEffect, useState} from "react"
-import Autocomplete from '@mui/joy/Autocomplete';
-import Box from '@mui/joy/Box';
-import Stack from '@mui/joy/Stack';
-import Divider from '@mui/joy/Divider';
-import Chip from '@mui/joy/Chip';
-import Input from '@mui/joy/Input';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import Button from '@mui/joy/Button';
-import BarChart from "../BarChart";
+import React, { useState } from "react";
+import axios from 'axios';
+import { 
+  Box, 
+  Typography, 
+  Container, 
+  Grid, 
+  Card, 
+  CardContent, 
+  Autocomplete, 
+  TextField, 
+  Button, 
+  Divider 
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import LineChart from "../LineChart";
-import axios from 'axios'
 
-//icons for chips
+// Icons
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import TransformIcon from '@mui/icons-material/Transform';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import SearchIcon from '@mui/icons-material/Search';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-//Importing background image
-import backgroundImage from './feature1bg.jpeg';
+// Styled components
+const HeroSection = styled('div')(({ theme }) => ({
+  position: 'relative',
+  backgroundImage: 'url("/images/stadium-bg-dark.jpg")', // Make sure to add this image to your public folder
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  height: '60vh',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: '#fff',
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    zIndex: 1,
+  },
+}));
 
-//importing css file 
-import "./TeamAnalysis.css";
+const SearchContainer = styled(Card)(({ theme }) => ({
+  position: 'relative',
+  zIndex: 2,
+  width: '100%',
+  maxWidth: 800,
+  backgroundColor: 'rgba(22, 28, 36, 0.95)',
+  backdropFilter: 'blur(6px)',
+  borderRadius: '16px',
+  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+}));
 
+const MetricCard = styled(Card)(({ theme, color }) => ({
+  backgroundColor: 'rgba(22, 28, 36, 0.95)',
+  backdropFilter: 'blur(6px)',
+  borderRadius: '16px',
+  boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+  height: '100%',
+  overflow: 'hidden',
+  border: '1px solid rgba(255, 255, 255, 0.05)',
+}));
 
+const MetricHeader = styled('div')(({ theme, color }) => ({
+  padding: '16px 24px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+  backgroundColor: color,
+}));
 
+const ChartContainer = styled('div')({
+  padding: '24px',
+  height: '300px',
+});
 
+const InsightContainer = styled('div')({
+  padding: '24px',
+  backgroundColor: 'rgba(255, 255, 255, 0.02)',
+});
 
+const LoadingOverlay = styled('div')({
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 9999,
+  flexDirection: 'column',
+});
 
-const TeamAnalysis = () =>{
+const StyledButton = styled(Button)({
+  backgroundColor: '#1E88E5',
+  borderRadius: '8px',
+  padding: '10px 24px',
+  '&:hover': {
+    backgroundColor: '#1565C0',
+  },
+});
 
-    const [graph1x, setgraph1x] = useState([])
-    const [graph1y, setgraph1y] = useState([])
+const TeamAnalysis = () => {
+  const [graph1x, setGraph1x] = useState([]);
+  const [graph1y, setGraph1y] = useState([]);
+  const [graph2x, setGraph2x] = useState([]);
+  const [graph2y, setGraph2y] = useState([]);
+  const [graph3x, setGraph3x] = useState([]);
+  const [graph3y, setGraph3y] = useState([]);
+  const [graph4x, setGraph4x] = useState([]);
+  const [graph4y, setGraph4y] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [team, setTeam] = useState(null);
+  const [displayData, setDisplayData] = useState(false);
 
+  // Team options - kept from original code
+  const teams = [
+    { name: 'Hamburg SV' },
+    { name: 'Borussia Dortmund' },
+    { name: 'FC Augsburg' },
+    { name: 'SC Freiburg' },
+    { name: 'Werder Bremen' },
+    { name: 'Kaiserslautern' },
+    { name: 'Lorient' },
+    { name: 'Paris Saint-Germain' },
+    { name: 'Valenciennes' },
+    { name: 'Caen' },
+    { name: 'Nurnberg' },
+    { name: 'Hertha Berlin' },
+    { name: 'Brest' },
+    { name: 'Evian Thonon Gaillard' },
+    { name: 'AC Ajaccio' },
+    { name: 'Toulouse' },
+    { name: 'Nice' },
+    { name: 'Lyon' },
+    { name: 'VfL Wolfsburg' },
+    { name: 'FC Cologne' },
+    { name: 'Lille' },
+    { name: 'AS Nancy Lorraine' },
+    { name: 'Montpellier' },
+    { name: 'AJ Auxerre' },
+    { name: 'Schalke 04' },
+    { name: 'VfB Stuttgart' },
+    { name: 'TSG Hoffenheim' },
+    { name: 'Hannover 96' },
+    { name: 'Marseille' },
+    { name: 'Sochaux' },
+    { name: 'Bordeaux' },
+    { name: 'St Etienne' },
+    { name: 'Dijon FCO' },
+    { name: 'Stade Rennes' },
+    { name: 'Mainz' },
+    { name: 'Bayer Leverkusen' },
+    { name: 'Bayern Munich' },
+    { name: 'Borussia Monchengladbach' },
+    { name: 'Sporting Gijon' },
+    { name: 'Real Sociedad' },
+    { name: 'Valencia' },
+    { name: 'Racing Santander' },
+    { name: 'Real Zaragoza' },
+    { name: 'Real Madrid' },
+    { name: 'Sevilla' },
+    { name: 'Malaga' },
+    { name: 'Rayo Vallecano' },
+    { name: 'Athletic Bilbao' },
+    { name: 'Getafe' },
+    { name: 'Levante' },
+    { name: 'Atletico Madrid' },
+    { name: 'Osasuna' },
+    { name: 'Mallorca' },
+    { name: 'Espanyol' },
+    { name: 'Barcelona' },
+    { name: 'Villarreal' },
+    { name: 'Lazio' },
+    { name: 'AC Milan' },
+    { name: 'Cesena' },
+    { name: 'Napoli' },
+    { name: 'Palermo' },
+    { name: 'Internazionale' },
+    { name: 'Chievo Verona' },
+    { name: 'Novara' },
+    { name: 'Juventus' },
+    { name: 'Parma' },
+    { name: 'Real Betis' },
+    { name: 'Udinese' },
+    { name: 'Lecce' },
+    { name: 'Siena' },
+    { name: 'Catania' },
+    { name: 'AS Roma' },
+    { name: 'Cagliari' },
+    { name: 'Fiorentina' },
+    { name: 'Bologna' },
+    { name: 'Atalanta' },
+    { name: 'Genoa' },
+    { name: 'Granada' },
+    { name: 'Stade de Reims' },
+    { name: 'Celta Vigo' },
+    { name: 'Troyes' },
+    { name: 'Bastia' },
+    { name: 'Deportivo La Coruna' },
+    { name: 'Real Valladolid' },
+    { name: 'SpVgg Greuther Furth' },
+    { name: 'Fortuna Dusseldorf' },
+    { name: 'Eintracht Frankfurt' },
+    { name: 'Torino' },
+    { name: 'Sampdoria' },
+    { name: 'US Pescara' },
+    { name: 'AS Monaco' },
+    { name: 'Guingamp' },
+    { name: 'Nantes' },
+    { name: 'Almeria' },
+    { name: 'Elche' },
+    { name: 'Hellas Verona' },
+    { name: 'Sassuolo' },
+    { name: 'Livorno' },
+    { name: 'TSV Eintracht Braunschweig' },
+    { name: 'Aston Villa' },
+    { name: 'Hull' },
+    { name: 'Fulham' },
+    { name: 'Stoke City' },
+    { name: 'Sunderland' },
+    { name: 'Manchester Utd' },
+    { name: 'Liverpool' },
+    { name: 'Crystal Palace' },
+    { name: 'Manchester City' },
+    { name: 'Everton' },
+    { name: 'Newcastle' },
+    { name: 'Cardiff' },
+    { name: 'West Brom' },
+    { name: 'Arsenal' },
+    { name: 'West Ham' },
+    { name: 'Tottenham' },
+    { name: 'Chelsea' },
+    { name: 'Norwich City' },
+    { name: 'Swansea' },
+    { name: 'Southampton' },
+    { name: 'Metz' },
+    { name: 'Lens' },
+    { name: 'QPR' },
+    { name: 'Leicester City' },
+    { name: 'Burnley' },
+    { name: 'SC Paderborn' },
+    { name: 'Eibar' },
+    { name: 'Cordoba' },
+    { name: 'Empoli' },
+    { name: 'Bournemouth' },
+    { name: 'Watford' },
+    { name: 'Angers' },
+    { name: 'GFC Ajaccio' },
+    { name: 'SV Darmstadt 98' },
+    { name: 'FC Ingolstadt 04' },
+    { name: 'Las Palmas' },
+    { name: 'Frosinone' },
+    { name: 'Carpi' },
+    { name: 'Middlesbrough' },
+    { name: 'Alaves' },
+    { name: 'Crotone' },
+    { name: 'Leganes' },
+    { name: 'RB Leipzig' }
+  ];
 
-    const [graph2x, setgraph2x] = useState([])
-    const [graph2y, setgraph2y] = useState([])
+  const handleTeamSelection = (event, value) => {
+    setTeam(value);
+  };
 
-    const [graph3x, setgraph3x] = useState([])
-    const [graph3y, setgraph3y] = useState([])
-
-    const [graph4x, setgraph4x] = useState([])
-    const [graph4y, setgraph4y] = useState([])
-
-
-    const teams = [
-      { name: 'Hamburg SV' },
-      { name: 'Borussia Dortmund' },
-      { name: 'FC Augsburg' },
-      { name: 'SC Freiburg' },
-      { name: 'Werder Bremen' },
-      { name: 'Kaiserslautern' },
-      { name: 'Lorient' },
-      { name: 'Paris Saint-Germain' },
-      { name: 'Valenciennes' },
-      { name: 'Caen' },
-      { name: 'Nurnberg' },
-      { name: 'Hertha Berlin' },
-      { name: 'Brest' },
-      { name: 'Evian Thonon Gaillard' },
-      { name: 'AC Ajaccio' },
-      { name: 'Toulouse' },
-      { name: 'Nice' },
-      { name: 'Lyon' },
-      { name: 'VfL Wolfsburg' },
-      { name: 'FC Cologne' },
-      { name: 'Lille' },
-      { name: 'AS Nancy Lorraine' },
-      { name: 'Montpellier' },
-      { name: 'AJ Auxerre' },
-      { name: 'Schalke 04' },
-      { name: 'VfB Stuttgart' },
-      { name: 'TSG Hoffenheim' },
-      { name: 'Hannover 96' },
-      { name: 'Marseille' },
-      { name: 'Sochaux' },
-      { name: 'Bordeaux' },
-      { name: 'St Etienne' },
-      { name: 'Dijon FCO' },
-      { name: 'Stade Rennes' },
-      { name: 'Mainz' },
-      { name: 'Bayer Leverkusen' },
-      { name: 'Bayern Munich' },
-      { name: 'Borussia Monchengladbach' },
-      { name: 'Sporting Gijon' },
-      { name: 'Real Sociedad' },
-      { name: 'Valencia' },
-      { name: 'Racing Santander' },
-      { name: 'Real Zaragoza' },
-      { name: 'Real Madrid' },
-      { name: 'Sevilla' },
-      { name: 'Malaga' },
-      { name: 'Rayo Vallecano' },
-      { name: 'Athletic Bilbao' },
-      { name: 'Getafe' },
-      { name: 'Levante' },
-      { name: 'Atletico Madrid' },
-      { name: 'Osasuna' },
-      { name: 'Mallorca' },
-      { name: 'Espanyol' },
-      { name: 'Barcelona' },
-      { name: 'Villarreal' },
-      { name: 'Lazio' },
-      { name: 'AC Milan' },
-      { name: 'Cesena' },
-      { name: 'Napoli' },
-      { name: 'Palermo' },
-      { name: 'Internazionale' },
-      { name: 'Chievo Verona' },
-      { name: 'Novara' },
-      { name: 'Juventus' },
-      { name: 'Parma' },
-      { name: 'Real Betis' },
-      { name: 'Udinese' },
-      { name: 'Lecce' },
-      { name: 'Siena' },
-      { name: 'Catania' },
-      { name: 'AS Roma' },
-      { name: 'Cagliari' },
-      { name: 'Fiorentina' },
-      { name: 'Bologna' },
-      { name: 'Atalanta' },
-      { name: 'Genoa' },
-      { name: 'Granada' },
-      { name: 'Stade de Reims' },
-      { name: 'Celta Vigo' },
-      { name: 'Troyes' },
-      { name: 'Bastia' },
-      { name: 'Deportivo La Coruna' },
-      { name: 'Real Valladolid' },
-      { name: 'SpVgg Greuther Furth' },
-      { name: 'Fortuna Dusseldorf' },
-      { name: 'Eintracht Frankfurt' },
-      { name: 'Torino' },
-      { name: 'Sampdoria' },
-      { name: 'US Pescara' },
-      { name: 'AS Monaco' },
-      { name: 'Guingamp' },
-      { name: 'Nantes' },
-      { name: 'Almeria' },
-      { name: 'Elche' },
-      { name: 'Hellas Verona' },
-      { name: 'Sassuolo' },
-      { name: 'Livorno' },
-      { name: 'TSV Eintracht Braunschweig' },
-      { name: 'Aston Villa' },
-      { name: 'Hull' },
-      { name: 'Fulham' },
-      { name: 'Stoke City' },
-      { name: 'Sunderland' },
-      { name: 'Manchester Utd' },
-      { name: 'Liverpool' },
-      { name: 'Crystal Palace' },
-      { name: 'Manchester City' },
-      { name: 'Everton' },
-      { name: 'Newcastle' },
-      { name: 'Cardiff' },
-      { name: 'West Brom' },
-      { name: 'Arsenal' },
-      { name: 'West Ham' },
-      { name: 'Tottenham' },
-      { name: 'Chelsea' },
-      { name: 'Norwich City' },
-      { name: 'Swansea' },
-      { name: 'Southampton' },
-      { name: 'Metz' },
-      { name: 'Lens' },
-      { name: 'QPR' },
-      { name: 'Leicester City' },
-      { name: 'Burnley' },
-      { name: 'SC Paderborn' },
-      { name: 'Eibar' },
-      { name: 'Cordoba' },
-      { name: 'Empoli' },
-      { name: 'Bournemouth' },
-      { name: 'Watford' },
-      { name: 'Angers' },
-      { name: 'GFC Ajaccio' },
-      { name: 'SV Darmstadt 98' },
-      { name: 'FC Ingolstadt 04' },
-      { name: 'Las Palmas' },
-      { name: 'Frosinone' },
-      { name: 'Carpi' },
-      { name: 'Middlesbrough' },
-      { name: 'Alaves' },
-      { name: 'Crotone' },
-      { name: 'Leganes' },
-      { name: 'RB Leipzig' }
-      ];
-
-
-
-
-
-
-
-      
-      
-      
-      
-      
-
-
-
-    const [loading, setLoading] = useState(false); 
-    const [team,setTeam] = useState('')
-    const handleTeamSelection = (event, value) => {
-            setTeam(value)
-            console.log(value); // logs the selected value
-          }
-
-          const handleClick = async () => {
-            console.log("Selected team is:", team);
+  const handleClick = async () => {
+    if (!team) return;
     
-            const data = { 'team': team };
-            const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-            console.log(backendUrl);
-            setLoading(true);
+    setLoading(true);
+    const data = { 'team': team };
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
     
-            try {
-                const response = await axios.post(`${backendUrl}/feature1`, data);
-                console.log(response.data);
-                setgraph1x(response.data.graph1.data);
-                setgraph1y(response.data.graph1.labels);
-                setgraph2x(response.data.graph2.data);
-                setgraph2y(response.data.graph2.labels);
-                setgraph3x(response.data.graph3.data);
-                setgraph3y(response.data.graph3.labels);
-                setgraph4x(response.data.graph4.data);
-                setgraph4y(response.data.graph4.labels);
-            } catch (error) {
-                console.error("Error fetching data from backend:", error);
-            }
-            finally {
-              // Set loading state to false once data is fetched or an error occurs
-              setLoading(false);
-            }
-            //console.log("Button clicked!");
-        };
+    try {
+      const response = await axios.post(`${backendUrl}/feature1`, data);
+      setGraph1x(response.data.graph1.data);
+      setGraph1y(response.data.graph1.labels);
+      setGraph2x(response.data.graph2.data);
+      setGraph2y(response.data.graph2.labels);
+      setGraph3x(response.data.graph3.data);
+      setGraph3y(response.data.graph3.labels);
+      setGraph4x(response.data.graph4.data);
+      setGraph4y(response.data.graph4.labels);
+      setDisplayData(true);
+    } catch (error) {
+      console.error("Error fetching data from backend:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-
-       // Refactored insight generator function
-const generateInsight = (data, label) => {
-    console.log("Inside generate insights");
-    console.log("Data taken currently:", data);
-    console.log("Label provided:", label);
-  
+  // Generate insights from data (kept from original)
+  const generateInsight = (data, label) => {
     if (!Array.isArray(data) || data.length === 0) {
       return `No data available for ${label}.`;
     }
   
-    // Calculate overall max and min values and their corresponding minute indexes.
     const maxVal = Math.max(...data);
     const minVal = Math.min(...data);
     const maxIndex = data.indexOf(maxVal);
@@ -258,42 +311,31 @@ const generateInsight = (data, label) => {
   
     let insights = [];
     insights.push(`1. Highest: ${label} peaked at ${maxVal} at minute ${maxIndex}.`);
-
     insights.push(`2. Lowest: ${label} had the lowest value of ${minVal} at minute ${minIndex}.`);
-
   
-    // For Red Cards, only the first two insights are generated.
     if (label.toLowerCase().includes('red card')) {
       return insights.join('\n');
     }
   
-    // --- Time Chunk Analysis ---
-    // We assume each index corresponds to one minute.
     const totalMinutes = data.length;
     let chunks = [];
   
     if (totalMinutes <= 30) {
-      // Only one segment available.
       chunks.push({ start: 0, end: totalMinutes - 1 });
     } else if (totalMinutes <= 60) {
-      // Two segments: first 30 minutes and the rest.
       chunks.push({ start: 0, end: 29 });
       chunks.push({ start: 30, end: totalMinutes - 1 });
     } else if (totalMinutes <= 90) {
-      // Three segments: 0-29, 30-59, and 60 to end.
       chunks.push({ start: 0, end: 29 });
       chunks.push({ start: 30, end: 59 });
       chunks.push({ start: 60, end: totalMinutes - 1 });
     } else {
-      // More than 90 minutes.
       const extra = totalMinutes - 90;
       if (extra < 30) {
-        // Merge extra minutes with the third chunk.
         chunks.push({ start: 0, end: 29 });
         chunks.push({ start: 30, end: 59 });
         chunks.push({ start: 60, end: totalMinutes - 1 });
       } else {
-        // Extra minutes form a new segment.
         chunks.push({ start: 0, end: 29 });
         chunks.push({ start: 30, end: 59 });
         chunks.push({ start: 60, end: 89 });
@@ -315,253 +357,252 @@ const generateInsight = (data, label) => {
   };
 
   const content1 = !loading && graph1x.length > 0 ? generateInsight(graph1x, "Goals") : "";
-const content2 = !loading && graph2x.length > 0 ? generateInsight(graph2x, "Substitutions") : "";
-const content3 = !loading && graph3x.length > 0 ? generateInsight(graph3x, "Red Cards") : "";
-const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yellow Cards") : "";
+  const content2 = !loading && graph2x.length > 0 ? generateInsight(graph2x, "Substitutions") : "";
+  const content3 = !loading && graph3x.length > 0 ? generateInsight(graph3x, "Red Cards") : "";
+  const content4 = !loading && graph4x.length > 0 ? generateInsight(graph4x, "Yellow Cards") : "";
 
-
-
-return (
-    <div>
-      <div
-        className="team-analysis-background"
-        style={{
-          backgroundImage: `url(${backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          position: 'relative',
-          height: '50vh',
-        }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            backgroundColor: 'rgba(0,0,0,0.5)',
-          }}
-        >
-          {/* THIS IS THE TOP SEARCH BOX */}
-          <Box
-            className="team-search-box"
-            sx={{
-              display: 'flex',
-              gap: 2,
-              flexWrap: 'wrap',
-              margin: '5rem',
-              marginLeft: '20rem',
-              borderRadius: 10,
-              width: '800px',
-              zIndex: 1,
-              backgroundColor: 'white',
-              boxShadow: '0px 5px 10px rgba(0, 0, 0, 0.2)',
-              border: '2px solid black',
-            }}
-          >
-            <h1 style={{ marginTop: '1rem', marginLeft: '18rem' }}>
+  return (
+    <Box sx={{
+      minHeight: '100vh',
+      backgroundColor: '#0A1929',
+      color: '#fff',
+    }}>
+      {/* Hero Section with Search */}
+      <HeroSection>
+        <SearchContainer>
+          <CardContent sx={{ p: 4 }}>
+            <Typography variant="h3" component="h1" align="center" gutterBottom sx={{ fontWeight: 700 }}>
               Team Analysis
-            </h1>
-            <p style={{ marginTop: '1rem', marginLeft: '10rem' }}>
+            </Typography>
+            <Typography variant="body1" align="center" sx={{ opacity: 0.7, mb: 4 }}>
               Select a team from the drop-down and analyze its key metrics
-            </p>
-            <Autocomplete
-              placeholder="Choose team"
-              options={teams.map((team) => team.name)}
-              autoHighlight
-              sx={{ width: 300, margin: 4 }}
-              onChange={handleTeamSelection}
-            />
-            <Button
-              variant="soft"
-              endDecorator={<KeyboardArrowRight />}
-              color="success"
-              sx={{ width: 300, margin: 4 }}
-              onClick={handleClick}
-            >
-              Analyze
-            </Button>
-  
-            {loading && (
-              <div className="loading-overlay">
-                <div className="loading-spinner"></div>
-                <div className="loading-text">
-                  <p>The model is working hard to crunch numbers for you.</p>
-                  <p>Hang tight to see the visualizations...</p>
-                </div>
-              </div>
-            )}
-          </Box>
-        </div>
-      </div>
-  
-      {/* Render charts only when loading is complete and data is available */}
-      {!loading && graph1x.length > 0 && (
-        <>
-          {/* First Plot - Goals */}
-          <div style={{ marginTop: '20px', padding: '10px' }}>
-            <Divider>
-              <Chip
-                color="success"
-                size="medium"
-                startDecorator={<SportsScoreIcon />}
-                sx={{
-                  width: '200px',
-                  borderRadius: '30px',
-                  fontSize: '1.2rem',
-                  padding: '5px',
-                }}
-              >
-                Goals
-              </Chip>
-            </Divider>
-            <Box
-              className="chart-container"
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 2,
-                justifyContent: 'space-between',
-                marginTop: '20px',
-              }}
-            >
-              <LineChart
-                chartLabel={"Goals"}
-                labels={graph1y}
-                data={graph1x}
-                color={'green'}
-                sx={{ width: '48%' }}
-              />
-              <div style={{ width: '48%', whiteSpace: 'pre-wrap' }}>
-                <p>{content1}</p>
-              </div>
-            </Box>
-          </div>
-  
-          {/* Second Plot - Substitutions */}
-          <div style={{ marginTop: '60px' }}>
-            <Divider>
-              <Chip
-                color="primary"
-                size="medium"
-                startDecorator={<TransformIcon />}
-                sx={{
-                  width: '200px',
-                  borderRadius: '30px',
-                  fontSize: '1.2rem',
-                  padding: '5px',
-                }}
-              >
-                Substitutions
-              </Chip>
-            </Divider>
-            <Box
-              className="chart-container"
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 2,
-                justifyContent: 'space-between',
-                marginTop: '20px',
-              }}
-            >
-              <div style={{ width: '48%', whiteSpace: 'pre-wrap' }}>
-                <p>{content2}</p>
-              </div>
-              <LineChart
-                chartLabel={"Substitutions"}
-                labels={graph2y}
-                data={graph2x}
-                color={'blue'}
-                sx={{ width: '48%' }}
-              />
-            </Box>
-          </div>
-  
-          {/* Third Plot - Red Cards */}
-          <div style={{ marginTop: '60px' }}>
-            <Divider>
-              <Chip
-                color="danger"
-                size="medium"
-                startDecorator={<DangerousIcon />}
-                sx={{
-                  width: '200px',
-                  borderRadius: '30px',
-                  fontSize: '1.2rem',
-                  padding: '5px',
-                }}
-              >
-                Red Cards
-              </Chip>
-            </Divider>
-            <Box
-              className="chart-container"
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 2,
-                justifyContent: 'space-between',
-                marginTop: '20px',
-              }}
-            >
-              <LineChart
-                chartLabel={"Red Cards"}
-                labels={graph3y}
-                data={graph3x}
-                sx={{ width: '48%' }}
-              />
-              <div style={{ width: '48%', whiteSpace: 'pre-wrap' }}>
-                <p>{content3}</p>
-              </div>
-            </Box>
-          </div>
-  
-          {/* Fourth Plot - Yellow Cards */}
-          <div style={{ marginTop: '60px', marginBottom: '35px' }}>
-            <Divider>
-              <Chip
-                color="warning"
-                size="medium"
-                startDecorator={<WarningAmberIcon />}
-                sx={{
-                  width: '200px',
-                  borderRadius: '30px',
-                  fontSize: '1.2rem',
-                  padding: '5px',
-                }}
-              >
-                Yellow Cards
-              </Chip>
-            </Divider>
-            <Box
-              className="chart-container"
-              sx={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: 2,
-                justifyContent: 'space-between',
-                marginTop: '20px',
-              }}
-            >
-              <div style={{ width: '48%', whiteSpace: 'pre-wrap' }}>
-                <p>{content4}</p>
-              </div>
-              <LineChart
-                chartLabel={"Yellow Cards"}
-                labels={graph4y}
-                data={graph4x}
-                color={'orange'}
-                sx={{ width: '48%' }}
-              />
-            </Box>
-          </div>
-        </>
+            </Typography>
+            
+            <Grid container spacing={2} alignItems="center">
+              <Grid item xs={12} md={8}>
+                <Autocomplete
+                  options={teams.map(team => team.name)}
+                  renderInput={(params) => (
+                    <TextField 
+                      {...params} 
+                      label="Choose team" 
+                      variant="outlined"
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          bgcolor: 'rgba(255, 255, 255, 0.05)',
+                          borderRadius: '8px',
+                          '& fieldset': {
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                          },
+                          '&:hover fieldset': {
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                          },
+                        },
+                        '& .MuiInputLabel-root': {
+                          color: 'rgba(255, 255, 255, 0.7)',
+                        },
+                        '& .MuiInputBase-input': {
+                          color: 'white',
+                        },
+                      }}
+                    />
+                  )}
+                  onChange={handleTeamSelection}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <StyledButton 
+                  fullWidth 
+                  variant="contained" 
+                  size="large"
+                  endIcon={<ArrowForwardIcon />}
+                  onClick={handleClick}
+                >
+                  Analyze
+                </StyledButton>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </SearchContainer>
+      </HeroSection>
+
+      {/* Loading Overlay */}
+      {loading && (
+        <LoadingOverlay>
+          <div className="loading-spinner" style={{ 
+            border: '8px solid rgba(255, 255, 255, 0.3)',
+            borderTop: '8px solid #fff',
+            borderRadius: '50%',
+            width: '80px',
+            height: '80px',
+            animation: 'spin 1.5s linear infinite',
+            marginBottom: '20px'
+          }} />
+          <Typography variant="h6" sx={{ color: 'white', mb: 1 }}>
+            The model is working hard to crunch numbers for you.
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'white', opacity: 0.7 }}>
+            Hang tight to see the visualizations...
+          </Typography>
+        </LoadingOverlay>
       )}
-    </div>
+
+      {/* Charts Section */}
+      {displayData && !loading && graph1x.length > 0 && (
+        <Container maxWidth="xl" sx={{ py: 6 }}>
+          <Grid container spacing={4}>
+            {/* Goals Card */}
+            <Grid item xs={12}>
+              <MetricCard>
+                <MetricHeader color="rgba(46, 125, 50, 0.9)">
+                  <SportsScoreIcon sx={{ fontSize: 28 }} />
+                  <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
+                    Goals
+                  </Typography>
+                </MetricHeader>
+                <Grid container>
+                  <Grid item xs={12} md={6}>
+                    <ChartContainer>
+                      <LineChart
+                        chartLabel={"Goals"}
+                        labels={graph1y}
+                        data={graph1x}
+                        color={'#4CAF50'}
+                      />
+                    </ChartContainer>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <InsightContainer>
+                      <Typography
+                        component="pre"
+                        sx={{
+                          whiteSpace: 'pre-wrap',
+                          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                          fontSize: '1rem',
+                          lineHeight: 1.8,
+                          color: 'rgba(255, 255, 255, 0.8)'
+                        }}
+                      >
+                        {content1}
+                      </Typography>
+                    </InsightContainer>
+                  </Grid>
+                </Grid>
+              </MetricCard>
+            </Grid>
+
+            {/* Substitutions Card */}
+            <Grid item xs={12}>
+              <MetricCard>
+                <MetricHeader color="rgba(25, 118, 210, 0.9)">
+                  <TransformIcon sx={{ fontSize: 28 }} />
+                  <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
+                    Substitutions
+                  </Typography>
+                </MetricHeader>
+                <Grid container>
+                  <Grid item xs={12} md={6}>
+                    <InsightContainer>
+                      <Typography
+                        component="pre"
+                        sx={{
+                          whiteSpace: 'pre-wrap',
+                          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                          fontSize: '1rem',
+                          lineHeight: 1.8,
+                          color: 'rgba(255, 255, 255, 0.8)'
+                        }}
+                      >
+                        {content2}
+                      </Typography>
+                    </InsightContainer>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <ChartContainer>
+                      <LineChart
+                        chartLabel={"Substitutions"}
+                        labels={graph2y}
+                        data={graph2x}
+                        color={'#2196F3'}
+                      />
+                    </ChartContainer>
+                  </Grid>
+                </Grid>
+              </MetricCard>
+            </Grid>
+
+            {/* Red Cards Card */}
+            <Grid item xs={12} md={6}>
+              <MetricCard>
+                <MetricHeader color="rgba(211, 47, 47, 0.9)">
+                  <DangerousIcon sx={{ fontSize: 28 }} />
+                  <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
+                    Red Cards
+                  </Typography>
+                </MetricHeader>
+                <ChartContainer>
+                  <LineChart
+                    chartLabel={"Red Cards"}
+                    labels={graph3y}
+                    data={graph3x}
+                    color={'#F44336'}
+                  />
+                </ChartContainer>
+                <InsightContainer>
+                  <Typography
+                    component="pre"
+                    sx={{
+                      whiteSpace: 'pre-wrap',
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: '1rem',
+                      lineHeight: 1.8,
+                      color: 'rgba(255, 255, 255, 0.8)'
+                    }}
+                  >
+                    {content3}
+                  </Typography>
+                </InsightContainer>
+              </MetricCard>
+            </Grid>
+
+            {/* Yellow Cards Card */}
+            <Grid item xs={12} md={6}>
+              <MetricCard>
+                <MetricHeader color="rgba(237, 108, 2, 0.9)">
+                  <WarningAmberIcon sx={{ fontSize: 28 }} />
+                  <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
+                    Yellow Cards
+                  </Typography>
+                </MetricHeader>
+                <ChartContainer>
+                  <LineChart
+                    chartLabel={"Yellow Cards"}
+                    labels={graph4y}
+                    data={graph4x}
+                    color={'#FF9800'}
+                  />
+                </ChartContainer>
+                <InsightContainer>
+                  <Typography
+                    component="pre"
+                    sx={{
+                      whiteSpace: 'pre-wrap',
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontSize: '1rem',
+                      lineHeight: 1.8,
+                      color: 'rgba(255, 255, 255, 0.8)'
+                    }}
+                  >
+                    {content4}
+                  </Typography>
+                </InsightContainer>
+              </MetricCard>
+            </Grid>
+          </Grid>
+        </Container>
+      )}
+    </Box>
   );
-  
 };
 
 export default TeamAnalysis;
