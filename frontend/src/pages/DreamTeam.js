@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { teamsList } from "./teams";
 
@@ -24,7 +24,8 @@ import {
   MenuItem,
   InputLabel,
   FormControl,
-  Autocomplete
+  Autocomplete,
+  CircularProgress
 } from "@mui/material";
 
 // Icons
@@ -41,18 +42,21 @@ import pitch from "./pitch.jpeg";
 const DreamTeam = () => {
   // Refs
   const formRef = useRef(null);
+  const resultRef = useRef(null);
   
   // Animation text
   const headerText = useTypingEffect("Build Your Dream Team", 100);
   
   // State variables
-  const [ccflag, setCcflag] = useState(0); // 0-club, 1-country
+  const [ccflag, setCcflag] = useState(null); // Initialize with null (no selection)
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState("All");
   const [tactic, setTactic] = useState("");
   const [customTactic, setCustomTactic] = useState("");
   const [players, setPlayers] = useState([]);
   const [positions, setPositions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   // Club and country options
   const clubs = teamsList.map((team) => ({ name: team }));
@@ -94,11 +98,22 @@ const DreamTeam = () => {
   // API calls
   const fetchPlayers = async (params) => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000";
+    setIsLoading(true);
+    setDataLoaded(false);
+    
+    // Scroll to results section
+    if (resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+    
     try {
       const response = await axios.post(`${backendUrl}/feature3`, null, { params });
       setPlayers(response.data.result);
+      setDataLoaded(true);
     } catch (error) {
       console.error("Error fetching players:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -249,7 +264,6 @@ const DreamTeam = () => {
                   
                   <RadioGroup
                     row
-                    defaultValue="Club"
                     onChange={handleRadioChange}
                     sx={{ mb: 2 }}
                   >
@@ -284,16 +298,17 @@ const DreamTeam = () => {
 
                 <Box sx={{ mb: 3 }}>
                   <Typography variant="body1" sx={{ color: "white", mb: 1 }}>
-                    {ccflag === 0 ? "Select Club" : "Select Country"}
+                    {ccflag === 0 ? "Select Club" : ccflag === 1 ? "Select Country" : "Select Team"}
                   </Typography>
                   
                   <Autocomplete
-                    options={teams.map(team => team.name)}
+                    options={teams.map(team => team.name) || []}
                     onChange={handleTeamSelection}
+                    disabled={ccflag === null}
                     renderInput={(params) => (
                       <TextField 
                         {...params} 
-                        placeholder={ccflag === 0 ? "Choose club" : "Choose country"}
+                        placeholder={ccflag === 0 ? "Choose club" : ccflag === 1 ? "Choose country" : "Select team type first"}
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             backgroundColor: "#1e4976",
@@ -344,6 +359,7 @@ const DreamTeam = () => {
                   variant="contained"
                   startIcon={<SearchIcon />}
                   onClick={handlePredefinedSearch}
+                  disabled={!selectedTeam || !tactic || ccflag === null}
                   fullWidth
                   sx={{
                     backgroundColor: "#1976d2",
@@ -418,6 +434,7 @@ const DreamTeam = () => {
                   variant="contained"
                   startIcon={<SearchIcon />}
                   onClick={handleCustomSearch}
+                  disabled={!selectedTeam || !positions.length || ccflag === null}
                   fullWidth
                   sx={{
                     backgroundColor: "#1976d2",
@@ -436,6 +453,7 @@ const DreamTeam = () => {
 
       {/* Results Section */}
       <Box 
+        ref={resultRef}
         sx={{
           backgroundColor: "#0a1929",
           py: 6,
@@ -477,16 +495,28 @@ const DreamTeam = () => {
                 border: "2px solid rgba(45, 106, 177, 0.5)"
               }}
             >
-              <Box
-                component="img"
-                src={pitch}
-                alt="Football pitch"
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover"
-                }}
-              />
+              {/* Only show pitch background when data is loaded */}
+              {dataLoaded && (
+                <Box
+                  component="img"
+                  src={pitch}
+                  alt="Football pitch"
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    animation: "fadeIn 1s ease-in-out",
+                    "@keyframes fadeIn": {
+                      "0%": {
+                        opacity: 0,
+                      },
+                      "100%": {
+                        opacity: 1,
+                      },
+                    },
+                  }}
+                />
+              )}
               
               <Box
                 sx={{
@@ -495,12 +525,42 @@ const DreamTeam = () => {
                   left: 0,
                   width: "100%",
                   height: "100%",
+                  backgroundColor: dataLoaded ? "transparent" : "rgba(0, 0, 0, 0.7)",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center"
                 }}
               >
-                <CardGrid tactic={formatTacticArray()} data={players} />
+                {isLoading ? (
+                  <Box sx={{ textAlign: "center" }}>
+                    <CircularProgress size={60} sx={{ color: "#90caf9", mb: 2 }} />
+                    <Typography variant="h6" sx={{ color: "white" }}>
+                      Building your dream team...
+                    </Typography>
+                  </Box>
+                ) : dataLoaded ? (
+                  <CardGrid 
+                    tactic={formatTacticArray()} 
+                    data={players} 
+                    sx={{
+                      animation: "slideInFromTop 1s ease-out",
+                      "@keyframes slideInFromTop": {
+                        "0%": {
+                          transform: "translateY(-20px)",
+                          opacity: 0,
+                        },
+                        "100%": {
+                          transform: "translateY(0)",
+                          opacity: 1,
+                        },
+                      },
+                    }}
+                  />
+                ) : (
+                  <Typography variant="h6" sx={{ color: "white", textAlign: "center", px: 2 }}>
+                    Select a team type, team, and formation, then click "Find Dream Team" to see your results
+                  </Typography>
+                )}
               </Box>
             </Box>
           </Paper>
