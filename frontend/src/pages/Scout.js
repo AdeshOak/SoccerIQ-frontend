@@ -24,6 +24,7 @@ const Scout = () => {
       
       console.log('Scouting results:', response.data);
       setPlayers(response.data.result);
+      console.log(players);
       setShowResults(true);
     } catch (error) {
       console.error('Error fetching data:', error);
