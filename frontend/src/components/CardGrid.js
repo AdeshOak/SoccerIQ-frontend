@@ -36,32 +36,6 @@ const Card = ({ title, content }) => (
 
 const cardsPerRow = [1,4,4,2];
 
-/*const CardGrid = () => {
-    const rows = [];
-
-    for (let i = 0; i < data.length; i += cardsPerRow.reduce((a, b) => a + b, 0)) {
-      const rowCards = data.slice(i, i + cardsPerRow.reduce((a, b) => a + b, 0));
-      let index = 0;
-      const row = cardsPerRow.map((numCards) => {
-        const cards = rowCards.slice(index, index + numCards);
-        index += numCards;
-        return (
-          <div key={index} style={{ display: 'flex',justifyContent:'center', padding:'20px'}}>
-            {cards.map((item, index) => (
-              <Card key={index} title={item.title} content={item.content}/>
-            ))}
-          </div>
-        );
-      });
-      rows.push(row);
-    }
-  
-    return <div style = {{marginTop:'-150px'}}>{rows}</div>;
-  };*/
-
-
-
-
   const CardGrid = ({ tactic,data }) => {
     const cardsPerRow = tactic; // Number of cards per row
   

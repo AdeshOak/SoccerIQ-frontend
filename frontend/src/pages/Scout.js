@@ -1,103 +1,18 @@
 import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
-import SearchIcon from '@mui/icons-material/Search';
+import { Box, Grid, Typography, Slider, TextField } from '@mui/material';
+import { Search } from '@mui/icons-material';
 import Button from '@mui/joy/Button';
-import { blue } from '@mui/material/colors';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import axios from 'axios';
-import CardGrid from '../components/CardGrid';
-
-
-
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import MuiInput from '@mui/material/Input';
-import { styled } from '@mui/material/styles';
-
-import bgImage from './feature4-bg.jpeg'
-
-
-function valuetext(value) {
-  return `${value}°C`;
-}
+import ScoutCardGrid from '../components/ScoutCardGrid';
+import stadiumBg from './feature4-bg.jpeg'; // Assuming you'll replace with a high-quality stadium image
 
 const Scout = () => {
-  const [sliderValue, setSliderValue] = useState(30); // Initial value of the slider
-  const [showData, setShowData] = useState(false); // Flag to show data div
-  const [isLoading, setIsLoading] = useState(false); // Flag to indicate loading state
-  const [players,setPlayers] = useState([]);
+  const [value, setValue] = useState(30);
+  const [showData, setShowData] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [players, setPlayers] = useState([]);
 
- /* // Define a function to handle the value change
-  const handleSliderChange = (event, value) => {
-    setSliderValue(value);
-  };*/
-
-  const handleSearchClick = async() => {
-    setIsLoading(true); // Start loading
-    console.log("Clicked sv",value)
-
-    /*await axios.post('http://127.0.0.1:5000/feature4', null,
-    {params:{'intial_overall':value}})
-
-    
-  .then(response => {
-      console.log(response.data)
-      setPlayers(response.data.result)
-
-     
-    })
-    .catch(error => {
-      console.log(error);
-    });*/
-
-    const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
-    console.log(backendUrl);
-
-    try {
-      const response = await axios.post(`${backendUrl}/feature4`, null, {
-        params: {
-          'initial_overall': value
-        }
-      });
-    
-      console.log(response.data);
-      setPlayers(response.data.result);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      // Handle error state or display an error message to the user
-    }
-
-
-
-
-
-
-    // Simulating an asynchronous API call
-    setTimeout(() => {
-      setIsLoading(false); // Stop loading
-      setShowData(true); // Show the data div
-    }, 2000);
-  };
-const integerArray = [3,3,3,1]
-  const NsliderStyle = {
-    marginTop: '50px',
-    width: '200px', // Adjust this value to set the desired width
-    color:blue[500],
-    marginLeft: '30px'
-  };
-
-
-
-
-
-  const Input = styled(MuiInput)`
-  width: 42px;
-`;
-  const [value, setValue] = React.useState(30);
-
-  const handleNSliderChange = (event, newValue) => {
+  const handleSliderChange = (event, newValue) => {
     setValue(newValue);
   };
 
@@ -113,85 +28,203 @@ const integerArray = [3,3,3,1]
     }
   };
 
+  const handleSearchClick = async () => {
+    setIsLoading(true);
+    
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+    
+    try {
+      const response = await axios.post(`${backendUrl}/feature4`, null, {
+        params: {
+          'initial_overall': value
+        }
+      });
+      
+      setPlayers(response.data.result);
+      setShowData(true);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      // Handle error state
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  // Formation pattern for player cards [3,3,3,1]
+  const integerArray = [3, 3, 3, 1];
 
   return (
-    <>
-    <div style={{
-    width: '100%',
-    position: 'relative',
-    marginTop:'-40px',
-    zIndex: 1,
-    backgroundImage: `url(${bgImage})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-  }}>
-    
-    <Box sx={{ width: '500px', marginLeft: '30px' }}>
-    <Box sx={{ width: '500px' }}>
-      {/*for the form*/}
-      <Box sx={{border:'1px solid black', marginLeft:'450px',marginTop:'40px',width:'600px',padding:'40px',borderRadius:'20px',backgroundColor:'white' }}>
-      <Typography id="input-slider" gutterBottom sx={{fontSize:'40px',fontWeight:'bold'}}>
-        Set Score
-      </Typography>
-      <Grid container spacing={2} alignItems="center">
-        <Grid item xs>
-          <Slider
-            value={typeof value === 'number' ? value : 0}
-            onChange={handleNSliderChange}
-            aria-labelledby="input-slider"
-            styke={NsliderStyle}
-          />
-        </Grid>
-        <Grid item>
-          <Input
-            value={value}
-            size="small"
-            onChange={handleInputChange}
-            onBlur={handleBlur}
-            inputProps={{
-              step: 10,
-              min: 0,
-              max: 100,
-              type: 'number',
-              'aria-labelledby': 'input-slider',
-            }}
-          />
-        </Grid>
-        <Grid item>
-        <Button
-          onClick={handleSearchClick}
-          disabled={isLoading} // Disable button while loading
-          style={{
-            marginLeft: '40px',
-            width:'100px'
+    <Box
+      sx={{
+        width: '100%',
+        minHeight: '100vh',
+        background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url(${stadiumBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        pt: 2,
+        pb: 8,
+      }}
+    >
+      <Box
+        sx={{
+          maxWidth: 1200,
+          mx: 'auto',
+          px: { xs: 2, md: 4 }
+        }}
+      >
+        {/* Header Section */}
+        <Typography 
+          variant="h2" 
+          sx={{ 
+            textAlign: 'center', 
+            color: 'white', 
+            fontWeight: 700,
+            mb: 6,
+            mt: 4,
+            fontSize: { xs: '2rem', md: '3rem' }
           }}
         >
-          {isLoading ? (
-            'Scouting...'
-          ) : (
-            <>
-              Scout<SearchIcon style={{ marginLeft: '5px' }} />
-            </>
-          )}
-        </Button>
-      
-      
+          Scout Talent
+        </Typography>
 
-        </Grid>
-      </Grid>
+        {/* Search Interface */}
+        <Box 
+          sx={{
+            bgcolor: 'rgba(17, 25, 40, 0.75)',
+            backdropFilter: 'blur(16px)',
+            borderRadius: 3,
+            border: '1px solid rgba(255, 255, 255, 0.125)',
+            p: 4,
+            mb: 6,
+            maxWidth: 800,
+            mx: 'auto',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+          }}
+        >
+          <Typography variant="h4" sx={{ color: 'white', mb: 4, fontWeight: 600 }}>
+            Set Player Rating
+          </Typography>
+          
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={9}>
+              <Slider
+                value={typeof value === 'number' ? value : 0}
+                onChange={handleSliderChange}
+                aria-labelledby="player-rating-slider"
+                min={0}
+                max={100}
+                step={1}
+                sx={{
+                  color: '#3B82F6',
+                  height: 8,
+                  '& .MuiSlider-thumb': {
+                    height: 24,
+                    width: 24,
+                    backgroundColor: '#fff',
+                    border: '2px solid #3B82F6',
+                    '&:focus, &:hover, &.Mui-active': {
+                      boxShadow: '0 0 0 8px rgba(59, 130, 246, 0.16)',
+                    },
+                  },
+                  '& .MuiSlider-track': {
+                    height: 8,
+                    borderRadius: 4,
+                  },
+                  '& .MuiSlider-rail': {
+                    height: 8,
+                    borderRadius: 4,
+                    opacity: 0.28,
+                  },
+                }}
+              />
+            </Grid>
+            
+            <Grid item xs={6} md={3}>
+              <TextField
+                value={value}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                inputProps={{
+                  step: 1,
+                  min: 0,
+                  max: 100,
+                  type: 'number',
+                  'aria-labelledby': 'player-rating-slider',
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    color: 'white',
+                    '& fieldset': {
+                      borderColor: 'rgba(255, 255, 255, 0.23)',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(255, 255, 255, 0.5)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#3B82F6',
+                    },
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                  },
+                  '& .MuiInputBase-input': {
+                    textAlign: 'center',
+                    fontSize: '1.25rem',
+                    fontWeight: 'bold',
+                  },
+                  width: '100%',
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} sx={{ textAlign: 'center', mt: 2 }}>
+              <Button
+                onClick={handleSearchClick}
+                disabled={isLoading}
+                endDecorator={<Search />}
+                size="lg"
+                sx={{
+                  bgcolor: '#3B82F6',
+                  color: 'white',
+                  px: 6,
+                  py: 1.5,
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  '&:hover': {
+                    bgcolor: '#2563EB',
+                  },
+                  '&.Mui-disabled': {
+                    bgcolor: 'rgba(59, 130, 246, 0.5)',
+                  },
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                }}
+              >
+                {isLoading ? 'Scouting...' : 'Scout'}
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+
+        {/* Results Section */}
+        {showData && (
+          <Box sx={{ mt: 4, width: '100%' }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                color: 'white', 
+                mb: 4, 
+                fontWeight: 600,
+                textAlign: 'center'
+              }}
+            >
+              Scout Results
+            </Typography>
+            <ScoutCardGrid tactic={integerArray} data={players} />
+          </Box>
+        )}
       </Box>
     </Box>
-    </Box>
-    {showData && (
-        <div style={{ marginTop: '150px',marginLeft:'200px' }}>
-         
-          {/* Display the fetched data */}
-          <CardGrid tactic = {integerArray} data ={players}/>
-        </div>
-      )}
-      </div>
-    </>
   );
 };
 
