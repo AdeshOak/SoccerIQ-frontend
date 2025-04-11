@@ -230,7 +230,7 @@ const Scout = () => {
       p: 4,
       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
     }}>
-      <ScoutedCardGrid tactic={integerArray} data={players} />
+      {/*<ScoutedCardGrid tactic={integerArray} data={players} />*/}
       
       {/* Carousel with dark background */}
       <Box sx={{ 
