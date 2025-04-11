@@ -100,14 +100,15 @@ const ScoutedCardGrid = ({ tactic, data }) => {
         width: '100%',
         maxWidth: '1200px',
         mx: 'auto',
-        backgroundImage: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%)',
-        backdropFilter: 'blur(10px)',
+        //backgroundImage: 'linear-gradient(to bottom, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%)',
+        //backdropFilter: 'blur(10px)',
         borderRadius: 4,
         p: 3,
         overflow: 'hidden',
+        position: 'relative'
       }}
     >
-      {/* Soccer field visual background */}
+      {/* Soccer field visual background 
       <Box
         sx={{
           position: 'absolute',
@@ -121,7 +122,7 @@ const ScoutedCardGrid = ({ tactic, data }) => {
           backgroundPosition: 'center',
           zIndex: -1,
         }}
-      />
+      />*/}
       
       {/* Player cards arranged in formation */}
       {rows}
