@@ -4,7 +4,7 @@ import { teamsList } from "./teams";
 
 // Components
 import PositionSelect from "../components/PositionSelect";
-import ScoutedCardGrid from "../components/ScoutCardGrid";
+import CardGrid from "../components/CardGrid";
 
 // MUI Components
 import {
@@ -539,7 +539,7 @@ const DreamTeam = () => {
                     </Typography>
                   </Box>
                 ) : dataLoaded ? (
-                  <ScoutedCardGrid
+                  <CardGrid
                     tactic={formatTacticArray()} 
                     data={players} 
                     sx={{
