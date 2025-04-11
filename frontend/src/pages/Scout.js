@@ -8,7 +8,7 @@ import stadiumBg from './feature4-bg.jpeg'; // Assuming you'll replace with a hi
 import Carousel from '../components/Carousel';
 import ScoutedPlayerCard from '../components/ScoutedCard';
 
-const Scout = ({scoutedPlayers}) => {
+const Scout = () => {
   const [value, setValue] = useState(30);
   const [showData, setShowData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -224,7 +224,7 @@ const Scout = ({scoutedPlayers}) => {
             </Typography>
             <ScoutedCardGrid tactic={integerArray} data={players} />
             <Carousel>
-        {scoutedPlayers.map((player, idx) => (
+        {players.map((player, idx) => (
           <Box
             key={idx}
             sx={{
