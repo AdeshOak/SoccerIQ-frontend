@@ -5,8 +5,10 @@ import Button from '@mui/joy/Button';
 import axios from 'axios';
 import ScoutedCardGrid from '../components/ScoutCardGrid';
 import stadiumBg from './feature4-bg.jpeg'; // Assuming you'll replace with a high-quality stadium image
+import Carousel from '@/components/Carousel';
+import ScoutedPlayerCard from '@/components/ScoutedCard';
 
-const Scout = () => {
+const Scout = ({scoutedPlayers}) => {
   const [value, setValue] = useState(30);
   const [showData, setShowData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -221,6 +223,21 @@ const Scout = () => {
               Scout Results
             </Typography>
             <ScoutedCardGrid tactic={integerArray} data={players} />
+            <Carousel>
+        {scoutedPlayers.map((player, idx) => (
+          <Box
+            key={idx}
+            sx={{
+              minWidth: { xs: '250px', sm: '300px' },
+              flex: '0 0 auto',
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <ScoutedPlayerCard player={player} />
+          </Box>
+        ))}
+      </Carousel>
           </Box>
         )}
       </Box>
