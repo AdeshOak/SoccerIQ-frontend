@@ -1,37 +1,46 @@
 // components/Carousel.js
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, IconButton } from '@mui/material';
 import { ChevronLeft, ChevronRight } from '@mui/icons-material';
-import { useRef } from 'react';
 
 const Carousel = ({ children }) => {
   const scrollRef = useRef(null);
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  // Clone children to create seamless infinite illusion
+  const clonedChildren = React.Children.toArray(children);
+  const duplicatedChildren = [...clonedChildren, ...clonedChildren];
 
   const scroll = (direction) => {
-    if (!scrollRef.current) return;
-  
-    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-    const scrollAmount = clientWidth * 0.8;
-    const maxScroll = scrollWidth - clientWidth;
-  
-    let newPosition;
-    if (direction === 'left') {
-      newPosition = scrollLeft - scrollAmount;
-      if (newPosition < 0) newPosition = maxScroll; // Loop to end
-    } else {
-      newPosition = scrollLeft + scrollAmount;
-      if (newPosition > maxScroll) newPosition = 0; // Loop to start
+    if (!scrollRef.current || isScrolling) return;
+    setIsScrolling(true);
+
+    const { scrollLeft, offsetWidth, scrollWidth } = scrollRef.current;
+    const scrollAmount = offsetWidth * 0.8;
+    const maxNaturalScroll = scrollWidth / 2; // Original content width
+
+    let newPosition = scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+
+    // Handle seamless reset
+    if (newPosition >= maxNaturalScroll * 1.5) {
+      newPosition = newPosition - maxNaturalScroll;
+      scrollRef.current.scrollLeft = newPosition;
+    } else if (newPosition <= -maxNaturalScroll) {
+      newPosition = newPosition + maxNaturalScroll;
+      scrollRef.current.scrollLeft = newPosition;
     }
-  
+
     scrollRef.current.scrollTo({
       left: newPosition,
       behavior: 'smooth'
     });
+
+    // Reset scrolling state after animation
+    setTimeout(() => setIsScrolling(false), 500);
   };
 
   return (
-    <Box sx={{ position: 'relative', width: '100%', overflow: 'hidden' , borderRadius: 2}}>
-      {/* Scroll buttons */}
+    <Box sx={{ position: 'relative', width: '100%', overflow: 'hidden', borderRadius: 2 }}>
       <IconButton
         onClick={() => scroll('left')}
         sx={{
@@ -60,7 +69,7 @@ const Carousel = ({ children }) => {
           '&::-webkit-scrollbar': { display: 'none' },
         }}
       >
-        {children}
+        {duplicatedChildren}
       </Box>
 
       <IconButton
