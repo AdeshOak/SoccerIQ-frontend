@@ -208,21 +208,26 @@ const Scout = () => {
           </Grid>
         </Box>
 
+        {/*<ScoutedCardGrid tactic={integerArray} data={players} />*/}
+
         {/* Results Section */}
-        {showData && (
-          <Box sx={{ mt: 4, width: '100%' }}>
-            <Typography 
-              variant="h4" 
-              sx={{ 
-                color: 'white', 
-                mb: 4, 
-                fontWeight: 600,
-                textAlign: 'center'
-              }}
-            >
-              Scout Results
-            </Typography>
-            <Box sx={{
+        {/* Results Section */}
+{showData && (
+  <Box sx={{ mt: 4, width: '100%' }}>
+    <Typography 
+      variant="h4" 
+      sx={{ 
+        color: 'white', 
+        mb: 4, 
+        fontWeight: 600,
+        textAlign: 'center'
+      }}
+    >
+      Scout Results
+    </Typography>
+    
+    {/* Outer bluish container - keep this */}
+    <Box sx={{
       bgcolor: 'rgba(17, 25, 40, 0.75)',
       backdropFilter: 'blur(16px)',
       borderRadius: 3,
@@ -230,32 +235,23 @@ const Scout = () => {
       p: 4,
       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
     }}>
-      {/*<ScoutedCardGrid tactic={integerArray} data={players} />*/}
-      
-      {/* Carousel with dark background */}
-      <Box sx={{ 
-        mt: 4,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        borderRadius: 2,
-        p: 2
-      }}>
-        <Carousel>
-          {players.map((player, idx) => (
-            <Box
-              key={idx}
-              sx={{
-                minWidth: { xs: '250px', sm: '300px' },
-                flex: '0 0 auto',
-                display: 'flex',
-                justifyContent: 'center',
-                p: 1
-              }}
-            >
-              <ScoutedPlayerCard player={player} />
-            </Box>
-          ))}
-        </Carousel>
-      </Box>
+      {/* Remove the inner black box and put Carousel directly */}
+      <Carousel>
+        {players.map((player, idx) => (
+          <Box
+            key={idx}
+            sx={{
+              minWidth: { xs: '250px', sm: '300px' },
+              flex: '0 0 auto',
+              display: 'flex',
+              justifyContent: 'center',
+              p: 1
+            }}
+          >
+            <ScoutedPlayerCard player={player} />
+          </Box>
+        ))}
+      </Carousel>
     </Box>
   </Box>
 )}
