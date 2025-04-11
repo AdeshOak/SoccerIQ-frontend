@@ -1,79 +1,172 @@
 import React from "react";
+import { Card, CardContent, Typography, Box, Chip } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+// Styled components
+const PlayerAvatar = styled(Box)(({ theme }) => ({
+  width: '100%',
+  height: '140px',
+  position: 'relative',
+  overflow: 'hidden',
+  borderRadius: '12px 12px 0 0',
+  backgroundColor: '#111',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'flex-start',
+}));
+
+const PlayerImage = styled('img')({
+  width: '100%',
+  height: '100%',
+  objectFit: 'contain',
+  objectPosition: 'center top',
+});
+
+const StatLabel = styled(Typography)({
+  color: 'rgba(255, 255, 255, 0.7)',
+  display: 'inline-block',
+  width: '80px',
+});
+
+const StatValue = styled(Typography)({
+  color: 'white',
+  fontWeight: 600,
+  display: 'inline-block',
+});
 
 const ScoutedPlayerCard = ({ player }) => {
   // Function to determine color based on rating
   const getRatingColor = (rating) => {
-    if (rating >= 80) return 'text-green-600'; // green
-    if (rating >= 70) return 'text-blue-600'; // blue
-    if (rating >= 60) return 'text-yellow-600'; // yellow
-    return 'text-white'; // white
+    if (rating >= 80) return '#16A34A'; // green
+    if (rating >= 70) return '#2563EB'; // blue
+    if (rating >= 60) return '#CA8A04'; // yellow
+    return '#FFFFFF'; // white
   };
   
   const getPotentialColor = (potential) => {
-    if (potential >= 85) return 'text-green-600'; // green
-    if (potential >= 75) return 'text-blue-600'; // blue
-    return 'text-yellow-600'; // yellow
+    if (potential >= 85) return '#16A34A'; // green
+    if (potential >= 75) return '#2563EB'; // blue
+    return '#CA8A04'; // yellow
   };
 
   return (
-    <div className="w-full max-w-xs rounded-xl bg-slate-800 shadow-lg border border-white/10 overflow-hidden transition-transform duration-200 hover:-translate-y-1 hover:shadow-xl">
-      {/* Player Image */}
-      <div className="w-full h-36 relative overflow-hidden rounded-t-xl bg-black flex justify-center items-start">
-        <img 
+    <Card 
+      sx={{
+        width: '100%',
+        maxWidth: '280px',
+        height: '100%',
+        borderRadius: '12px',
+        backgroundColor: '#1E293B',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+        position: 'relative',
+        overflow: 'hidden',
+        transition: 'transform 0.2s',
+        '&:hover': {
+          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+        },
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        m: 1.5,
+      }}
+    >
+      <PlayerAvatar>
+        <PlayerImage 
           src={player.Faceurl || '/placeholder-player.png'} 
-          alt={player.Name || 'Player'}
-          className="w-full h-full object-contain object-center-top"
+          alt={player.Name}
           onError={(e) => {
             e.target.onerror = null; 
             e.target.src = '/placeholder-player.png';
           }}
         />
-      </div>
+      </PlayerAvatar>
       
-      {/* Player Details */}
-      <div className="p-4">
-        <h2 className="text-white font-bold mb-3 pb-2 border-b border-white/10 overflow-hidden overflow-ellipsis whitespace-nowrap">
+      <CardContent sx={{ p: 2 }}>
+        <Typography 
+          variant="h6" 
+          component="h2" 
+          sx={{ 
+            color: 'white', 
+            fontWeight: 700,
+            mb: 1.5,
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            pb: 1,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }}
+        >
           {player.Name || 'Unknown Player'}
-        </h2>
+        </Typography>
         
-        <div className="flex items-center mb-2">
-          <span className="bg-white/10 text-white text-xs font-semibold px-2 py-1 rounded mr-2">
-            {player.position || '—'}
-          </span>
-          <span className="text-white/70 text-sm">
+        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <Chip 
+            label={player.position || '—'} 
+            size="small" 
+            sx={{ 
+              bgcolor: 'rgba(255, 255, 255, 0.08)', 
+              color: '#fff',
+              mr: 1,
+              fontWeight: 600,
+            }}
+          />
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              color: 'rgba(255, 255, 255, 0.7)',
+              fontSize: '0.9rem'
+            }}
+          >
             {player.club_name || 'Free Agent'}
-          </span>
-        </div>
+          </Typography>
+        </Box>
         
-        <div className="mt-4">
-          <div className="flex mb-1">
-            <span className="text-white/70 inline-block w-20 text-sm">Age:</span>
-            <span className="text-white font-semibold text-sm">{player.Age || '—'}</span>
-          </div>
+        <Box sx={{ mt: 2 }}>
+          <Box sx={{ display: 'flex', mb: 0.75 }}>
+            <StatLabel variant="body2">Age:</StatLabel>
+            <StatValue variant="body2">{player.Age || '—'}</StatValue>
+          </Box>
           
-          <div className="flex mb-1">
-            <span className="text-white/70 inline-block w-20 text-sm">Overall:</span>
-            <span className={`font-bold text-sm ${getRatingColor(player.Overall)}`}>
+          <Box sx={{ display: 'flex', mb: 0.75 }}>
+            <StatLabel variant="body2">Overall:</StatLabel>
+            <StatValue 
+              variant="body2" 
+              sx={{ 
+                color: getRatingColor(player.Overall),
+                fontWeight: 700
+              }}
+            >
               {player.Overall || '—'}
-            </span>
-          </div>
+            </StatValue>
+          </Box>
           
-          <div className="flex mb-1">
-            <span className="text-white/70 inline-block w-20 text-sm">Potential:</span>
-            <span className={`font-bold text-sm ${getPotentialColor(player.Potential)}`}>
+          <Box sx={{ display: 'flex', mb: 0.75 }}>
+            <StatLabel variant="body2">Potential:</StatLabel>
+            <StatValue 
+              variant="body2" 
+              sx={{ 
+                color: getPotentialColor(player.Potential),
+                fontWeight: 700
+              }}
+            >
               {player.Potential || '—'}
-            </span>
-          </div>
+            </StatValue>
+          </Box>
           
-          <div className="flex">
-            <span className="text-white/70 inline-block w-20 text-sm">Growth:</span>
-            <span className="text-green-600 font-bold text-sm">
+          <Box sx={{ display: 'flex' }}>
+            <StatLabel variant="body2">Growth:</StatLabel>
+            <StatValue 
+              variant="body2" 
+              sx={{ 
+                color: '#16A34A',
+                fontWeight: 700
+              }}
+            >
               +{player.Potential - player.Overall || '—'}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
+            </StatValue>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import ScoutedPlayerCard from './ScoutedCard';
 
-const ScoutCardGrid = ({ tactic, data }) => {
+const ScoutedCardGrid = ({ tactic, data }) => {
   // If no data is provided
   if (!data || data.length === 0) {
     return (
@@ -129,4 +129,4 @@ const ScoutCardGrid = ({ tactic, data }) => {
   );
 };
 
-export default ScoutCardGrid;
+export default ScoutedCardGrid;

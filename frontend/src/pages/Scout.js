@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import ScoutCardCarousel from '../components/ScoutCarousel'; // We'll create this new component
+import { Box, Grid, Typography, Slider, TextField } from '@mui/material';
+import { Search } from '@mui/icons-material';
+import Button from '@mui/joy/Button';
 import axios from 'axios';
-import { Search } from 'lucide-react';
+import ScoutedCardGrid from '../components/ScoutCardGrid';
+import stadiumBg from './feature4-bg.jpeg'; // Assuming you'll replace with a high-quality stadium image
 
 const Scout = () => {
-  const [value, setValue] = useState(56); // Changed to match image 3
+  const [value, setValue] = useState(30);
   const [showData, setShowData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [players, setPlayers] = useState([]);
 
-  const handleSliderChange = (e) => {
-    setValue(parseInt(e.target.value, 10));
+  const handleSliderChange = (event, newValue) => {
+    setValue(newValue);
   };
 
   const handleInputChange = (event) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value);
-    setValue(newValue);
+    setValue(event.target.value === '' ? '' : Number(event.target.value));
   };
 
   const handleBlur = () => {
@@ -48,78 +50,181 @@ const Scout = () => {
     }
   };
 
+  // Formation pattern for player cards [3,3,3,1]
+  const integerArray = [3, 3, 3, 1];
+
   return (
-    <div 
-      className="w-full min-h-screen flex flex-col"
-      style={{
-        background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('/stadium-background.jpg')`,
+    <Box
+      sx={{
+        width: '100%',
+        minHeight: '100vh',
+        background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url(${stadiumBg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
-        backgroundRepeat: 'no-repeat',
-        height: '100%' // Ensure background extends fully
+        pt: 2,
+        pb: 8,
       }}
     >
-      <div className="flex-grow max-w-6xl mx-auto px-4 md:px-6 py-8">
-        {/* Search Interface - Styled like image 3 */}
-        <div className="bg-slate-900/80 backdrop-blur-md rounded-xl p-10 mb-12 max-w-2xl mx-auto shadow-2xl">
-          <h2 className="text-white text-center mb-10 font-bold text-4xl">
+      <Box
+        sx={{
+          maxWidth: 1200,
+          mx: 'auto',
+          px: { xs: 2, md: 4 }
+        }}
+      >
+        {/* Header Section */}
+        <Typography 
+          variant="h2" 
+          sx={{ 
+            textAlign: 'center', 
+            color: 'white', 
+            fontWeight: 700,
+            mb: 6,
+            mt: 4,
+            fontSize: { xs: '2rem', md: '3rem' }
+          }}
+        >
+          Scout Talent
+        </Typography>
+
+        {/* Search Interface */}
+        <Box 
+          sx={{
+            bgcolor: 'rgba(17, 25, 40, 0.75)',
+            backdropFilter: 'blur(16px)',
+            borderRadius: 3,
+            border: '1px solid rgba(255, 255, 255, 0.125)',
+            p: 4,
+            mb: 6,
+            maxWidth: 800,
+            mx: 'auto',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+          }}
+        >
+          <Typography variant="h4" sx={{ color: 'white', mb: 4, fontWeight: 600 }}>
             Set Player Rating
-          </h2>
+          </Typography>
           
-          <div className="mb-8">
-            <div className="relative pt-1 px-2 mb-6">
-              <input
-                type="range"
-                min="0"
-                max="100"
-                step="1"
-                value={value}
+          <Grid container spacing={4} alignItems="center">
+            <Grid item xs={12} md={9}>
+              <Slider
+                value={typeof value === 'number' ? value : 0}
                 onChange={handleSliderChange}
-                className="w-full h-2 bg-blue-700/50 rounded-lg appearance-none cursor-pointer accent-blue-600"
                 aria-labelledby="player-rating-slider"
+                min={0}
+                max={100}
+                step={1}
+                sx={{
+                  color: '#3B82F6',
+                  height: 8,
+                  '& .MuiSlider-thumb': {
+                    height: 24,
+                    width: 24,
+                    backgroundColor: '#fff',
+                    border: '2px solid #3B82F6',
+                    '&:focus, &:hover, &.Mui-active': {
+                      boxShadow: '0 0 0 8px rgba(59, 130, 246, 0.16)',
+                    },
+                  },
+                  '& .MuiSlider-track': {
+                    height: 8,
+                    borderRadius: 4,
+                  },
+                  '& .MuiSlider-rail': {
+                    height: 8,
+                    borderRadius: 4,
+                    opacity: 0.28,
+                  },
+                }}
               />
-            </div>
+            </Grid>
             
-            <div className="flex justify-center">
-              <input
-                type="number"
-                min="0"
-                max="100"
+            <Grid item xs={6} md={3}>
+              <TextField
                 value={value}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                className="w-40 bg-black/20 text-white border border-white/20 rounded px-3 py-2 text-center text-3xl font-bold focus:border-blue-600 focus:outline-none"
-                aria-labelledby="player-rating-slider"
+                inputProps={{
+                  step: 1,
+                  min: 0,
+                  max: 100,
+                  type: 'number',
+                  'aria-labelledby': 'player-rating-slider',
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    color: 'white',
+                    '& fieldset': {
+                      borderColor: 'rgba(255, 255, 255, 0.23)',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'rgba(255, 255, 255, 0.5)',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#3B82F6',
+                    },
+                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                  },
+                  '& .MuiInputBase-input': {
+                    textAlign: 'center',
+                    fontSize: '1.25rem',
+                    fontWeight: 'bold',
+                  },
+                  width: '100%',
+                }}
               />
-            </div>
-          </div>
+            </Grid>
 
-          <div className="text-center mt-6">
-            <button
-              onClick={handleSearchClick}
-              disabled={isLoading}
-              className={`bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-lg text-lg font-semibold shadow-md flex items-center justify-center mx-auto space-x-2 transition-colors ${
-                isLoading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-            >
-              <span>{isLoading ? 'Scouting...' : 'Scout'}</span>
-              <Search size={20} />
-            </button>
-          </div>
-        </div>
+            <Grid item xs={12} sx={{ textAlign: 'center', mt: 2 }}>
+              <Button
+                onClick={handleSearchClick}
+                disabled={isLoading}
+                endDecorator={<Search />}
+                size="lg"
+                sx={{
+                  bgcolor: '#3B82F6',
+                  color: 'white',
+                  px: 6,
+                  py: 1.5,
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  '&:hover': {
+                    bgcolor: '#2563EB',
+                  },
+                  '&.Mui-disabled': {
+                    bgcolor: 'rgba(59, 130, 246, 0.5)',
+                  },
+                  borderRadius: '8px',
+                  textTransform: 'none',
+                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                }}
+              >
+                {isLoading ? 'Scouting...' : 'Scout'}
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
 
         {/* Results Section */}
         {showData && (
-          <div className="mt-12 w-full">
-            <h2 className="text-white mb-8 font-bold text-4xl text-center">
+          <Box sx={{ mt: 4, width: '100%' }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                color: 'white', 
+                mb: 4, 
+                fontWeight: 600,
+                textAlign: 'center'
+              }}
+            >
               Scout Results
-            </h2>
-            <ScoutCardCarousel players={players} />
-          </div>
+            </Typography>
+            <ScoutedCardGrid tactic={integerArray} data={players} />
+          </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
