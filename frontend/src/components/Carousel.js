@@ -18,7 +18,7 @@ const Carousel = ({ children }) => {
   };
 
   return (
-    <Box sx={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
+    <Box sx={{ position: 'relative', width: '100%', overflow: 'hidden' , borderRadius: 2}}>
       {/* Scroll buttons */}
       <IconButton
         onClick={() => scroll('left')}

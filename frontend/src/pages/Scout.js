@@ -222,24 +222,43 @@ const Scout = () => {
             >
               Scout Results
             </Typography>
-            <ScoutedCardGrid tactic={integerArray} data={players} />
-            <Carousel>
-        {players.map((player, idx) => (
-          <Box
-            key={idx}
-            sx={{
-              minWidth: { xs: '250px', sm: '300px' },
-              flex: '0 0 auto',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <ScoutedPlayerCard player={player} />
-          </Box>
-        ))}
-      </Carousel>
-          </Box>
-        )}
+            <Box sx={{
+      bgcolor: 'rgba(17, 25, 40, 0.75)',
+      backdropFilter: 'blur(16px)',
+      borderRadius: 3,
+      border: '1px solid rgba(255, 255, 255, 0.125)',
+      p: 4,
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
+    }}>
+      <ScoutedCardGrid tactic={integerArray} data={players} />
+      
+      {/* Carousel with dark background */}
+      <Box sx={{ 
+        mt: 4,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        borderRadius: 2,
+        p: 2
+      }}>
+        <Carousel>
+          {players.map((player, idx) => (
+            <Box
+              key={idx}
+              sx={{
+                minWidth: { xs: '250px', sm: '300px' },
+                flex: '0 0 auto',
+                display: 'flex',
+                justifyContent: 'center',
+                p: 1
+              }}
+            >
+              <ScoutedPlayerCard player={player} />
+            </Box>
+          ))}
+        </Carousel>
+      </Box>
+    </Box>
+  </Box>
+)}
       </Box>
     </Box>
   );
