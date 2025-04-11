@@ -5,8 +5,8 @@ import Button from '@mui/joy/Button';
 import axios from 'axios';
 import ScoutedCardGrid from '../components/ScoutCardGrid';
 import stadiumBg from './feature4-bg.jpeg'; // Assuming you'll replace with a high-quality stadium image
-import Carousel from '@/components/Carousel';
-import ScoutedPlayerCard from '@/components/ScoutedCard';
+import Carousel from '../components/Carousel';
+import ScoutedPlayerCard from '../components/ScoutedCard';
 
 const Scout = ({scoutedPlayers}) => {
   const [value, setValue] = useState(30);
