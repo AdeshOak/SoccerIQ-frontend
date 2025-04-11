@@ -8,13 +8,25 @@ const Carousel = ({ children }) => {
   const scrollRef = useRef(null);
 
   const scroll = (direction) => {
-    if (scrollRef.current) {
-      const scrollAmount = scrollRef.current.offsetWidth * 0.8;
-      scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth',
-      });
+    if (!scrollRef.current) return;
+  
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+    const scrollAmount = clientWidth * 0.8;
+    const maxScroll = scrollWidth - clientWidth;
+  
+    let newPosition;
+    if (direction === 'left') {
+      newPosition = scrollLeft - scrollAmount;
+      if (newPosition < 0) newPosition = maxScroll; // Loop to end
+    } else {
+      newPosition = scrollLeft + scrollAmount;
+      if (newPosition > maxScroll) newPosition = 0; // Loop to start
     }
+  
+    scrollRef.current.scrollTo({
+      left: newPosition,
+      behavior: 'smooth'
+    });
   };
 
   return (

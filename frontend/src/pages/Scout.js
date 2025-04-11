@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Box, Grid, Typography, Slider, TextField } from '@mui/material';
 import { Search } from '@mui/icons-material';
 import Button from '@mui/joy/Button';
@@ -13,6 +13,7 @@ const Scout = () => {
   const [showData, setShowData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [players, setPlayers] = useState([]);
+  const resultsRef = useRef(null);
 
   const handleSliderChange = (event, newValue) => {
     setValue(newValue);
@@ -44,6 +45,10 @@ const Scout = () => {
       
       setPlayers(response.data.result);
       setShowData(true);
+       // Auto-scroll after state update
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
     } catch (error) {
       console.error('Error fetching data:', error);
       // Handle error state
@@ -236,6 +241,7 @@ const Scout = () => {
       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)'
     }}>
       {/* Remove the inner black box and put Carousel directly */}
+      {players.length > 0 ? (
       <Carousel>
         {players.map((player, idx) => (
           <Box
@@ -252,6 +258,19 @@ const Scout = () => {
           </Box>
         ))}
       </Carousel>
+      ) : (
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 200,
+          color: 'rgba(255,255,255,0.8)'
+        }}>
+          <Typography variant="h5" sx={{ fontStyle: 'italic' }}>
+            No players found matching your criteria
+          </Typography>
+        </Box>
+      )}
     </Box>
   </Box>
 )}
