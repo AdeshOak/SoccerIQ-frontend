@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import ScoutCarousel from '../components/ScoutCarousel'; // Our new carousel component
+import ScoutCardCarousel from '../components/ScoutCarousel'; // We'll create this new component
 import axios from 'axios';
 import { Search } from 'lucide-react';
 
 const Scout = () => {
-  const [value, setValue] = useState(30);
+  const [value, setValue] = useState(56); // Changed to match image 3
   const [showData, setShowData] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [players, setPlayers] = useState([]);
@@ -50,43 +50,38 @@ const Scout = () => {
 
   return (
     <div 
-      className="w-full min-h-screen pt-4 pb-12"
+      className="w-full min-h-screen flex flex-col"
       style={{
-        background: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.85)), url('/stadium-background.jpg')`,
+        background: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('/stadium-background.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',
+        backgroundRepeat: 'no-repeat',
+        height: '100%' // Ensure background extends fully
       }}
     >
-      <div className="max-w-6xl mx-auto px-4 md:px-6">
-        {/* Header Section */}
-        <h1 className="text-center text-white font-bold mb-12 mt-8 text-3xl md:text-5xl">
-          Scout Talent
-        </h1>
-
-        {/* Search Interface */}
-        <div className="bg-slate-900/75 backdrop-blur-md rounded-xl border border-white/10 p-6 mb-12 max-w-3xl mx-auto shadow-2xl">
-          <h2 className="text-white mb-6 font-semibold text-2xl">
+      <div className="flex-grow max-w-6xl mx-auto px-4 md:px-6 py-8">
+        {/* Search Interface - Styled like image 3 */}
+        <div className="bg-slate-900/80 backdrop-blur-md rounded-xl p-10 mb-12 max-w-2xl mx-auto shadow-2xl">
+          <h2 className="text-white text-center mb-10 font-bold text-4xl">
             Set Player Rating
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-            <div className="md:col-span-9">
-              <div className="relative pt-1 px-2">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  step="1"
-                  value={value}
-                  onChange={handleSliderChange}
-                  className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                  aria-labelledby="player-rating-slider"
-                />
-              </div>
+          <div className="mb-8">
+            <div className="relative pt-1 px-2 mb-6">
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={value}
+                onChange={handleSliderChange}
+                className="w-full h-2 bg-blue-700/50 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                aria-labelledby="player-rating-slider"
+              />
             </div>
             
-            <div className="md:col-span-3">
+            <div className="flex justify-center">
               <input
                 type="number"
                 min="0"
@@ -94,33 +89,33 @@ const Scout = () => {
                 value={value}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
-                className="w-full bg-black/20 text-white border border-white/20 rounded px-3 py-2 text-center text-xl font-bold focus:border-blue-600 focus:outline-none"
+                className="w-40 bg-black/20 text-white border border-white/20 rounded px-3 py-2 text-center text-3xl font-bold focus:border-blue-600 focus:outline-none"
                 aria-labelledby="player-rating-slider"
               />
             </div>
+          </div>
 
-            <div className="col-span-full text-center mt-4">
-              <button
-                onClick={handleSearchClick}
-                disabled={isLoading}
-                className={`bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-md flex items-center justify-center mx-auto space-x-2 transition-colors ${
-                  isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                }`}
-              >
-                <span>{isLoading ? 'Scouting...' : 'Scout'}</span>
-                <Search size={20} />
-              </button>
-            </div>
+          <div className="text-center mt-6">
+            <button
+              onClick={handleSearchClick}
+              disabled={isLoading}
+              className={`bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-lg text-lg font-semibold shadow-md flex items-center justify-center mx-auto space-x-2 transition-colors ${
+                isLoading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+            >
+              <span>{isLoading ? 'Scouting...' : 'Scout'}</span>
+              <Search size={20} />
+            </button>
           </div>
         </div>
 
-        {/* Results Section - Now using the carousel */}
+        {/* Results Section */}
         {showData && (
-          <div className="mt-8 w-full">
-            <h2 className="text-white mb-6 font-semibold text-2xl text-center">
+          <div className="mt-12 w-full">
+            <h2 className="text-white mb-8 font-bold text-4xl text-center">
               Scout Results
             </h2>
-            <ScoutCarousel players={players} />
+            <ScoutCardCarousel players={players} />
           </div>
         )}
       </div>
