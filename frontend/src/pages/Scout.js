@@ -46,9 +46,12 @@ const Scout = () => {
       setPlayers(response.data.result);
       setShowData(true);
        // Auto-scroll after state update
-    setTimeout(() => {
-      resultsRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+       setTimeout(() => {
+        resultsRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center'  // This centers vertically
+        });
+      }, 100);
     } catch (error) {
       console.error('Error fetching data:', error);
       // Handle error state
