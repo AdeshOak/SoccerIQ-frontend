@@ -51,7 +51,7 @@ const Scout = () => {
   };
 
   // Formation pattern for player cards [3,3,3,1]
-  const integerArray = [3, 3, 3, 1];
+  const integerArray = [2, 2, 2, 2,2];
 
   return (
     <Box
