@@ -1,41 +1,73 @@
-import React, { useState } from 'react';
-import logo from '../SoccerIQ.png'; 
-import { Nav, NavLink, Bars, NavMenu } from './NavbarElements';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
+import logo from '../SoccerIQ.png'; // Ensure you have your logo file
+import { FaBars, FaTimes } from 'react-icons/fa';
 
 const Navbar = () => {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const navItems = [
+    { name: 'Home', path: '/' },
+    { name: 'Team Analysis', path: '/feature1' },
+    { name: 'Find Best Suited Player', path: '/feature2' },
+    { name: 'Dream Team', path: '/feature3' },
+    { name: 'Scout Players', path: '/feature4' },
+  ];
 
   return (
-    <>
-      <Nav>
-        <NavLink to='/'>
-          <img src={logo} alt="SoccerIQ Logo" className="nav-logo" />
-        </NavLink>
-        <Bars />
-        <NavMenu>
-          <NavLink to='/' activeStyle>Home</NavLink>
-          
-          {/* Dropdown Menu */}
-          <div 
-            className="nav-dropdown" 
-            onMouseEnter={() => setDropdownOpen(true)} 
-            onMouseLeave={() => setDropdownOpen(false)}
-          >
-            <button className="dropdown-btn">Explore Features ▾</button>
-            {dropdownOpen && (
-              <div className="dropdown-menu">
-                <NavLink to='/feature1'>Team Analysis</NavLink>
-                <NavLink to='/feature2'>Suited Player</NavLink>
-                <NavLink to='/feature3'>Dream Team</NavLink>
-                <NavLink to='/feature4'>Scout</NavLink>
-              </div>
-            )}
-          </div>
+    <nav className={`navbar ${scrolled ? 'navbar-scrolled' : ''}`}>
+      <div className="navbar-container">
+        <Link to="/" className="navbar-logo" onClick={closeMenu}>
+          <img src={logo} alt="Soccer IQ Logo" className="logo-image" />
+          <span className="logo-text">Soccer IQ</span>
+        </Link>
 
-        </NavMenu>
-      </Nav>
-    </>
+        <div className="menu-icon" onClick={toggleMenu}>
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </div>
+
+        <ul className={`nav-menu ${menuOpen ? 'active' : ''}`}>
+          {navItems.map((item, index) => (
+            <li key={index} className="nav-item">
+              <Link
+                to={item.path}
+                className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
+                onClick={closeMenu}
+              >
+                {item.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </nav>
   );
 };
 

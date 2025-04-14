@@ -108,21 +108,6 @@ const ScoutedCardGrid = ({ tactic, data }) => {
         position: 'relative'
       }}
     >
-      {/* Soccer field visual background 
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          opacity: 0.08,
-          backgroundImage: 'url(/field-background.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          zIndex: -1,
-        }}
-      />*/}
       
       {/* Player cards arranged in formation */}
       {rows}
