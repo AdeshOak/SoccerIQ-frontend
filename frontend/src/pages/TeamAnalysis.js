@@ -10,7 +10,6 @@ import {
   Autocomplete, 
   TextField, 
   Button, 
-  Divider 
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import LineChart from "../LineChart";
@@ -21,13 +20,12 @@ import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import TransformIcon from '@mui/icons-material/Transform';
 import DangerousIcon from '@mui/icons-material/Dangerous';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import SearchIcon from '@mui/icons-material/Search';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 // Styled components
 const HeroSection = styled('div')(({ theme }) => ({
   position: 'relative',
-  backgroundImage: 'url("/images/stadium-bg-dark.jpg")', // Make sure to add this image to your public folder
+  backgroundImage: 'url("/images/feature1-1.jpg")', // Make sure to add this image to your public folder
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   height: '60vh',

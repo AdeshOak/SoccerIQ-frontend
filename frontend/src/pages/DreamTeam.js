@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef} from "react";
 import axios from "axios";
 import { teamsList } from "./teams";
 
@@ -22,7 +22,6 @@ import {
   Fab,
   Select,
   MenuItem,
-  InputLabel,
   FormControl,
   Autocomplete,
   CircularProgress
