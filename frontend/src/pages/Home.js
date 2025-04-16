@@ -34,7 +34,7 @@ const Home = () => {
           <div className="hero-content">
             <h1 className="hero-title">Soccer IQ</h1>
             <p className="hero-subtitle">Unlock the power of soccer data analytics.</p>
-            <Link to="/features" className="cta-button">
+            <Link to="/feature1" className="cta-button">
               Explore Features
             </Link>
           </div>
@@ -46,25 +46,25 @@ const Home = () => {
               icon={<FaChartBar size={isMobile ? 30 : 40} />}
               title="Team Analysis"
               description="Analyze team performance across various metrics."
-              linkTo="/team-analysis"
+              linkTo="/feature1"
             />
             <FeatureCard
               icon={<FaBullseye size={isMobile ? 30 : 40} />}
               title="Find Best Suited Player"
               description="Using AI-driven models to predict expected goals and identify top performers."
-              linkTo="/find-player"
+              linkTo="/feature2"
             />
             <FeatureCard
               icon={<FaUsersCog size={isMobile ? 30 : 40} />}
               title="Best Team for Formation"
               description="Generate the best possible team lineup for any formation based on data analytics."
-              linkTo="/team-formation"
+              linkTo="/feature3"
             />
             <FeatureCard
               icon={<FaSearch size={isMobile ? 30 : 40} />}
               title="Scout a Player"
               description="Evaluate player skills and stats to find the best fit for your team."
-              linkTo="/scout-player"
+              linkTo="/feature4"
             />
           </div>
           </div>
